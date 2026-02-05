@@ -1,0 +1,23 @@
+{
+    "extends": "@tsconfig/react-native/tsconfig.json",
+    "include": [
+        "*.ts",
+        "src",
+        "nativewind-env.d.ts"
+    ],
+    "compilerOptions": {
+        "jsx": "react-jsx",
+        "baseUrl": ".",
+        "paths": {
+            "@/registry/*": [
+                "src/*"
+            ]
+        },
+        "types": [
+            "jest"
+        ]
+    },
+    "exclude": [
+        "node_modules"
+    ]
+}
