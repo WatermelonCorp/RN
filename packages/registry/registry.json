@@ -1,0 +1,54 @@
+{
+    "components": {
+        "button": {
+            "name": "button",
+            "type": "components:ui",
+            "files": [
+                {
+                    "path": "components/ui/button.tsx",
+                    "content": "",
+                    "type": "registry:ui"
+                }
+            ],
+            "dependencies": [
+                "@rn-primitives/slot",
+                "class-variance-authority",
+                "lucide-react-native",
+                "react-native-svg"
+            ],
+            "registryDependencies": [
+                "text"
+            ],
+            "tailwind": {
+                "config": {
+                    "theme": {
+                        "extend": {}
+                    }
+                }
+            }
+        },
+        "text": {
+            "name": "text",
+            "type": "components:ui",
+            "files": [
+                {
+                    "path": "components/ui/text.tsx",
+                    "content": "",
+                    "type": "registry:ui"
+                }
+            ],
+            "dependencies": [
+                "@rn-primitives/slot",
+                "class-variance-authority"
+            ],
+            "registryDependencies": [],
+            "tailwind": {
+                "config": {
+                    "theme": {
+                        "extend": {}
+                    }
+                }
+            }
+        }
+    }
+}
