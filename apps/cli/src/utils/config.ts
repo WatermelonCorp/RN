@@ -28,7 +28,7 @@ export const DEFAULT_CONFIG: WatermelonConfig = {
     },
 };
 
-export const REGISTRY_URL = 'https://raw.githubusercontent.com/vanshpatelx/RN/main/watermelon/packages/registry';
+export const REGISTRY_URL = 'https://raw.githubusercontent.com/vanshpatelx/RN/main/packages/registry';
 
 export async function getConfig(cwd: string): Promise<WatermelonConfig | null> {
     try {

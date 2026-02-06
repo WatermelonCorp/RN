@@ -1,7 +1,33 @@
 {
     "name": "watermelon-cli",
-    "version": "0.0.1",
-    "description": "CLI for Watermelon Design System",
+    "version": "0.0.2",
+    "description": "CLI for installing Watermelon React Native components - Beautiful, accessible UI components for Expo and React Native",
+    "author": "Vansh Patel",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/vanshpatelx/RN.git",
+        "directory": "watermelon/apps/cli"
+    },
+    "homepage": "https://github.com/vanshpatelx/RN/tree/main/watermelon",
+    "keywords": [
+        "react-native",
+        "expo",
+        "cli",
+        "components",
+        "ui",
+        "design-system",
+        "nativewind",
+        "tailwind",
+        "watermelon"
+    ],
+    "files": [
+        "dist",
+        "README.md"
+    ],
+    "engines": {
+        "node": ">=18.0.0"
+    },
     "main": "dist/index.js",
     "bin": {
         "watermelon": "./dist/index.js"

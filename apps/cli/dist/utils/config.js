@@ -21,7 +21,7 @@ exports.DEFAULT_CONFIG = {
         utils: '@/lib/utils',
     },
 };
-exports.REGISTRY_URL = 'https://raw.githubusercontent.com/watermelon/registry/main/packages/registry';
+exports.REGISTRY_URL = 'https://raw.githubusercontent.com/vanshpatelx/RN/main/packages/registry';
 async function getConfig(cwd) {
     try {
         const configPath = path_1.default.join(cwd, 'watermelon.json');
