@@ -1,4 +1,4 @@
-import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 async function generateRegistryData() {
@@ -11,7 +11,7 @@ async function generateRegistryData() {
   const registry = JSON.parse(registryRaw);
 
   const items = await Promise.all(
-    Object.entries(registry.components).map(async ([slug, component]: [string, any]) => {
+    Object.entries(registry.components).map(async ([slug, component]) => {
       const primaryFile = component.files[0];
       const sourcePath = path.join(registryRoot, "src", primaryFile.path);
       const source = await readFile(sourcePath, "utf8");
@@ -29,7 +29,7 @@ async function generateRegistryData() {
 
   const outputPath = path.join(root, "lib", "registry-data.json");
   await writeFile(outputPath, JSON.stringify(items, null, 2));
-  console.log("Gnerated registry data to:", outputPath);
+  console.log("Generated registry data to:", outputPath);
 }
 
 generateRegistryData().catch(console.error);

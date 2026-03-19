@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "bun scripts/generate-registry.ts",
+    "prebuild": "node scripts/generate-registry.mjs",
     "build": "next build",
     "build:cloudflare": "opennextjs-cloudflare build",
     "preview": "pnpm run build:cloudflare && opennextjs-cloudflare preview",
