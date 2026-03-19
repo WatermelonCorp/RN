@@ -65,7 +65,6 @@ export function CodeBlock({
   title,
   mobile = false,
 }: CodeBlockProps) {
-  const [copied, setCopied] = useState(false);
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
   const [syntax, setSyntax] = useState<{
@@ -139,16 +138,6 @@ export function CodeBlock({
       active = false;
     };
   }, []);
-
-  async function handleCopy() {
-    try {
-      await navigator.clipboard.writeText(code);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1800);
-    } catch {
-      setCopied(false);
-    }
-  }
 
   return (
     <div

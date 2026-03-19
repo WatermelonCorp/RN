@@ -1,0 +1,13 @@
+name = "watermelon-platform"
+main = ".open-next/worker.js"
+compatibility_date = "2024-11-01"
+
+[vars]
+NEXT_TELEMETRY_DISABLED = "1"
+
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
+
+[[package_manager_names]]
+package_manager = "pnpm"

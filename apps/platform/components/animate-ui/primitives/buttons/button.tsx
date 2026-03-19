@@ -12,21 +12,30 @@ type ButtonProps = WithAsChild<
   }
 >;
 
-function Button({
-  hoverScale = 1.05,
-  tapScale = 0.95,
-  asChild = false,
-  ...props
-}: ButtonProps) {
-  const Component = asChild ? Slot : motion.button;
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  (
+    {
+      hoverScale = 1.05,
+      tapScale = 0.95,
+      asChild = false,
+      ...props
+    }: ButtonProps,
+    ref,
+  ) => {
+    const Component = asChild ? Slot : motion.button;
 
-  return (
-    <Component
-      whileTap={{ scale: tapScale }}
-      whileHover={{ scale: hoverScale }}
-      {...props}
-    />
-  );
-}
+    return (
+      <Component
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ref={ref as any}
+        whileTap={{ scale: tapScale }}
+        whileHover={{ scale: hoverScale }}
+        {...props}
+      />
+    );
+  },
+);
+
+Button.displayName = 'Button';
 
 export { Button, type ButtonProps };
