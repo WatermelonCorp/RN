@@ -1,0 +1,8 @@
+name = "watermelon-platform"
+pages_build_output_dir = ".next"
+
+[vars]
+NEXT_TELEMETRY_DISABLED = "1"
+
+[[package_manager_names]]
+package_manager = "pnpm"

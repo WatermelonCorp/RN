@@ -44,12 +44,13 @@ const buttonVariants = cva(
   },
 );
 
-type CopyButtonProps = Omit<ButtonPrimitiveProps, 'children'> &
+type CopyButtonProps = Omit<ButtonPrimitiveProps, 'children' | 'asChild'> &
   VariantProps<typeof buttonVariants> & {
     content: string;
     copied?: boolean;
     onCopiedChange?: (copied: boolean, content?: string) => void;
     delay?: number;
+    onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   };
 
 function CopyButton({
@@ -95,10 +96,10 @@ function CopyButton({
 
   return (
     <ButtonPrimitive
+      {...(props as any)}
       data-slot="copy-button"
       className={cn(buttonVariants({ variant, size, className }))}
       onClick={handleCopy}
-      {...props}
     >
       <AnimatePresence mode="popLayout">
         <motion.span
