@@ -1,4 +1,4 @@
-import { PageHeader, SubTitle, Title } from "@/components/core/typography";
+import { PageHeader } from "@/components/core/typography";
 import { CodeBlock } from "@/components/showcase/code-block";
 import MotionDiv from "@/components/core/motion-div";
 

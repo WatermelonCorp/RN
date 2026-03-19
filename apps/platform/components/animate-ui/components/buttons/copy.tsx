@@ -96,6 +96,7 @@ function CopyButton({
 
   return (
     <ButtonPrimitive
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       {...(props as any)}
       data-slot="copy-button"
       className={cn(buttonVariants({ variant, size, className }))}

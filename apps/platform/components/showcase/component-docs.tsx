@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { PreviewVideo } from "@/components/showcase/docs-primitives";
 import { Button } from "@/components/ui/button";
 import { getRegistryCatalog } from "@/lib/registry-catalog";
 import Image from "next/image";

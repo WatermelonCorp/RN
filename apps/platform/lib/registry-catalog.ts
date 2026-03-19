@@ -1,17 +1,6 @@
 import { COMPONENT_DOC_META } from "@/lib/component-index";
 import registryData from "./registry-data.json";
 
-type RegistryComponentRecord = {
-  name: string;
-  type: string;
-  files: Array<{
-    path: string;
-    type: string;
-  }>;
-  dependencies?: string[];
-  registryDependencies?: string[];
-};
-
 export type ShowcaseComponent = {
   slug: string;
   title: string;
