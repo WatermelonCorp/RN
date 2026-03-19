@@ -37,13 +37,13 @@ This app is configured to deploy to Cloudflare Workers via OpenNext.
 npm run build
 ```
 
-Build the Cloudflare Worker bundle with OpenNext.
+Run a plain Next.js production build.
 
 ```bash
-npm run build:next
+npm run build:cloudflare
 ```
 
-Run a plain Next.js production build without generating Cloudflare output.
+Build the Cloudflare Worker bundle with OpenNext.
 
 ```bash
 npm run preview
@@ -56,6 +56,12 @@ npm run deploy
 ```
 
 Build and deploy to Cloudflare.
+
+In Cloudflare, set the build command to:
+
+```bash
+pnpm run build:cloudflare
+```
 
 ### One-time setup
 
