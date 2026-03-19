@@ -34,6 +34,18 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 This app is configured to deploy to Cloudflare Workers via OpenNext.
 
 ```bash
+npm run build
+```
+
+Build the Cloudflare Worker bundle with OpenNext.
+
+```bash
+npm run build:next
+```
+
+Run a plain Next.js production build without generating Cloudflare output.
+
+```bash
 npm run preview
 ```
 
