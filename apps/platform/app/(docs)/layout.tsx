@@ -1,6 +1,9 @@
-import type { CSSProperties, ReactNode } from "react";
-import { DocsSidebar } from "@/components/core/docs-sidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import type { ReactNode } from "react";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
+import { Navbar } from "@/components/core/navbar";
+import { TOCProvider } from "@/components/core/toc-context";
+import { DocsTOC } from "@/components/core/docs-toc";
 
 export default function ComponentsLayout({
   children,
@@ -8,23 +11,24 @@ export default function ComponentsLayout({
   children: ReactNode;
 }) {
   return (
-    <SidebarProvider>
-      <div
-        className="container mx-auto grid w-full gap-8 px-4 lg:grid-cols-[18rem_minmax(0,1fr)]"
-        style={
-          {
-            "--sidebar-width": "18rem",
-          } as CSSProperties
-        }
-      >
-        <div className="hidden lg:block">
-          <DocsSidebar />
-        </div>
-
-        <main className="min-h-[calc(100vh-4rem)]">
-          <div className="py-8 lg:py-10">{children}</div>
-        </main>
-      </div>
-    </SidebarProvider>
+    <TOCProvider>
+      <SidebarProvider>
+        <AppSidebar />
+        <SidebarInset className="relative flex h-[calc(100dvh-1.5rem)] flex-col overflow-y-auto bg-[linear-gradient(180deg,rgba(255,255,255,0.99),rgba(255,255,255,0.95))] dark:bg-[linear-gradient(180deg,rgba(24,24,27,0.98),rgba(24,24,27,0.94))]">
+          <main className="z-10 min-h-[calc(100vh-4rem)] w-full min-w-0 overflow-x-hidden 2xl:overflow-visible">
+            <Navbar />
+            <div className="mx-auto w-full max-w-6xl px-3 py-8 sm:px-4 lg:px-8 lg:py-10 xl:max-w-6xl 2xl:pr-72">
+              <div className="sticky top-14 z-10 -mx-3 mb-6 xl:hidden">
+                <DocsTOC mobile />
+              </div>
+              <div className="min-w-0">{children}</div>
+            </div>
+          </main>
+        </SidebarInset>
+        <aside className="border-border/40 sticky top-0 hidden h-svh w-72 xl:block">
+          <DocsTOC />
+        </aside>
+      </SidebarProvider>
+    </TOCProvider>
   );
 }

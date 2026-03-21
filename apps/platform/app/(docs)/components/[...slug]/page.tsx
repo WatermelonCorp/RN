@@ -7,6 +7,8 @@ import {
   OnThisPage,
   PreviewCard,
 } from "@/components/showcase/docs-primitives";
+import { ComponentPreview } from "@/components/mdx/component-preview";
+import { ComponentInstallation } from "@/components/showcase/component-installation";
 import {
   getComponentDoc,
   getComponentDocPager,
@@ -17,21 +19,23 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ComponentVideoPreview } from "@/components/showcase/component-video-preview";
 import MotionDiv from "@/components/core/motion-div";
 
 export function generateStaticParams() {
-  return getComponentDocSlugs().map((slug) => ({ slug }));
+  return getComponentDocSlugs().map((slug) => ({
+    slug: [slug],
+  }));
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string[] }>;
 }): Promise<Metadata> {
   const { slug } = await params;
+  const componentSlug = slug[0];
   try {
-    const { meta } = await getComponentDoc(slug);
+    const { meta } = await getComponentDoc(componentSlug);
     return {
       title: `${meta.title} | Watermelon RN`,
       description: meta.description,
@@ -44,17 +48,18 @@ export async function generateMetadata({
 export default async function ComponentPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string[] }>;
 }) {
   const { slug } = await params;
-  const doc = await getComponentDoc(slug).catch(() => null);
+  const componentSlug = slug[0];
+  const doc = await getComponentDoc(componentSlug).catch(() => null);
 
   if (!doc) {
     notFound();
   }
 
-  const { Content, meta } = doc;
-  const pager = getComponentDocPager(slug);
+  const { Content, meta, component } = doc;
+  const pager = getComponentDocPager(componentSlug);
 
   return (
     <MotionDiv
@@ -62,15 +67,18 @@ export default async function ComponentPage({
       animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       exit={{ opacity: 0, y: -20, filter: "blur(10px)" }}
       transition={{ duration: 0.3 }}
-      className="grid gap-10 xl:grid-cols-[minmax(0,1fr)_18rem]"
+      className="grid min-w-0 gap-10"
     >
-      <div className="space-y-6">
-        <section className="space-y-2">
+      <OnThisPage items={meta.toc} />
+      <div className="min-w-0 space-y-6">
+        <section className="min-w-0 space-y-2">
           <p className="text-muted-foreground w-fit rounded-md border bg-black/10 px-2 py-1 text-xs font-medium uppercase backdrop-blur-lg dark:bg-white/5">
             {meta.category}
           </p>
-          <h1 className="text-3xl font-(--font-display)">{meta.title}</h1>
-          <p className="text-muted-foreground max-w-3xl text-base leading-8">
+          <h1 className="text-3xl leading-tight font-(--font-display) sm:text-4xl">
+            {meta.title}
+          </h1>
+          <p className="text-muted-foreground max-w-3xl text-base leading-7 sm:leading-8">
             {meta.description}
           </p>
           <div className="flex flex-wrap gap-3">
@@ -87,8 +95,8 @@ export default async function ComponentPage({
           </div>
         </section>
 
-        <section className="mb-6 space-y-4">
-          <div className="flex justify-end">
+        <section className="mb-6 min-w-0 space-y-4">
+          <div className="flex justify-start sm:justify-end">
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="outline" size="sm">
@@ -104,24 +112,29 @@ export default async function ComponentPage({
               </PopoverContent>
             </Popover>
           </div>
-          <ComponentVideoPreview
-            name={meta.title}
-            description={meta.description}
-            category={meta.category}
-            video={meta.videoSrc}
+          <ComponentPreview
+            code={component.source}
+            video={meta.video}
+            poster={meta.image}
           />
         </section>
 
-        <article className="mb-10 space-y-10 p-4">
+        <ComponentInstallation
+          item={{
+            slug: component.slug,
+            name: meta.title,
+            category: meta.category,
+            install: meta.install ?? [`watermelon add ${component.slug}`],
+          }}
+          dependencies={meta.dependencies}
+        />
+
+        <article className="mb-10 min-w-0 space-y-8 px-0 py-2 sm:space-y-10 sm:px-4">
           <Content />
         </article>
 
         <DocsPager previous={pager.previous} next={pager.next} />
       </div>
-
-      <aside className="space-y-4 xl:sticky xl:top-20 xl:self-start">
-        <OnThisPage items={meta.toc} />
-      </aside>
     </MotionDiv>
   );
 }

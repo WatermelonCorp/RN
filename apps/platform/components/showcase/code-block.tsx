@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 import { CopyButton } from "../animate-ui/components/buttons/copy";
+import { GlassContainer } from "../core/3d-container";
 
 type HighlighterProps = Record<string, unknown> & {
   children?: string;
@@ -140,53 +141,61 @@ export function CodeBlock({
   }, []);
 
   return (
-    <div
+    <GlassContainer
+      variant="strong"
       className={cn(
-        "group border-border/70 bg-card/80 relative overflow-hidden rounded-xl border shadow-sm backdrop-blur",
+        "group w-full max-w-full min-w-0 rounded-2xl p-0.5",
         className,
       )}
     >
-      <div className="border-border/60 bg-background/80 flex items-center justify-between border-b px-1 py-1">
-        <p className="text-muted-foreground pl-2 text-xs font-medium tracking-[0.24em] lowercase">
-          {title || language}
-        </p>
+      <div className="border-border/70 bg-card/88 relative min-w-0 overflow-hidden rounded-[calc(1rem-2px)] border">
+        <div className="border-border/60 bg-background/82 flex items-center justify-between border-b px-1 py-1">
+          <p className="text-muted-foreground pl-2 text-xs font-medium tracking-[0.24em] lowercase">
+            {title || language}
+          </p>
 
-        <CopyButton variant="secondary" size="xs" content={code} />
+          <CopyButton variant="secondary" size="xs" content={code} />
+        </div>
+
+        {syntax ? (
+          <syntax.SyntaxHighlighter
+            language={language}
+            style={isDark ? syntax.oneDark : syntax.oneLight}
+            useInlineStyles
+            className="text-foreground"
+            showLineNumbers={mobile ? false : showLineNumbers}
+            customStyle={{
+              margin: 0,
+              padding: "1rem",
+              fontSize: "13px",
+              lineHeight: "1.6",
+              background: "transparent",
+              overflow: "auto",
+              width: "100%",
+              maxWidth: "100%",
+              whiteSpace: "pre-wrap",
+              wordBreak: "break-word",
+            }}
+            codeTagProps={{
+              style: {
+                fontFamily:
+                  "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+                whiteSpace: "pre-wrap",
+                wordBreak: "break-word",
+              },
+            }}
+            wrapLongLines
+          >
+            {code}
+          </syntax.SyntaxHighlighter>
+        ) : (
+          <pre className="m-0 max-w-full overflow-x-auto p-4 text-[13px] leading-[1.6] break-words whitespace-pre-wrap">
+            <code className="font-mono break-words whitespace-pre-wrap">
+              {code}
+            </code>
+          </pre>
+        )}
       </div>
-
-      {syntax ? (
-        <syntax.SyntaxHighlighter
-          language={language}
-          style={isDark ? syntax.oneDark : syntax.oneLight}
-          useInlineStyles
-          className="text-foreground"
-          showLineNumbers={mobile ? false : showLineNumbers}
-          customStyle={{
-            margin: 0,
-            padding: "1rem",
-            fontSize: "13px",
-            lineHeight: "1.6",
-            background: "transparent",
-            overflow: "auto",
-            whiteSpace: "pre",
-            wordBreak: "normal",
-          }}
-          codeTagProps={{
-            style: {
-              fontFamily:
-                "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
-              whiteSpace: "pre",
-            },
-          }}
-          wrapLongLines={false}
-        >
-          {code}
-        </syntax.SyntaxHighlighter>
-      ) : (
-        <pre className="m-0 overflow-x-auto p-4 text-[13px] leading-[1.6]">
-          <code className="font-mono whitespace-pre">{code}</code>
-        </pre>
-      )}
-    </div>
+    </GlassContainer>
   );
 }

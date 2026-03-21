@@ -35,7 +35,7 @@ export function CardCard({ item, onClick, trackType = "Card" }: CardProps) {
         onClick(item);
       }}
       className={cn(
-        "group relative flex flex-col",
+        "group relative flex min-w-0 max-w-full flex-col",
         "border-border/70 bg-card/80 rounded-lg border p-1 shadow-sm",
         "transition-all duration-200",
         item.comingSoon

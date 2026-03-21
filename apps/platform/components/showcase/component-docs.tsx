@@ -9,14 +9,20 @@ export async function ComponentsIndexView() {
 
   return (
     <div className="space-y-8">
-      <PageHeader
-        badge="Components"
-        title="Browse every installable primitive in the registry."
-        subTitle="This section mirrors the shadcn docs flow: overview first, then component detail pages with install commands, usage examples, and source straight from the registry."
-      />
+      <section id="component-overview" className="scroll-mt-24">
+        <PageHeader
+          badge="Components"
+          title="Browse every installable primitive in the registry."
+          subTitle="This section mirrors the shadcn docs flow: overview first, then component detail pages with install commands, usage examples, and source straight from the registry."
+        />
+      </section>
 
       {categories.map((category) => (
-        <section key={category.slug} className="space-y-5">
+        <section
+          key={category.slug}
+          id={category.slug}
+          className="scroll-mt-24 space-y-5"
+        >
           <div className="space-y-2">
             <p className="text-muted-foreground text-xs font-medium tracking-[0.22em] uppercase">
               {category.title}

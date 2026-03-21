@@ -5,10 +5,18 @@ import { getRegistryCatalog } from "@/lib/registry-catalog";
 import type { TocItem } from "@/components/showcase/docs-primitives";
 
 type DocMeta = {
+  slug?: string;
   title: string;
   description: string;
   category: string;
-  videoSrc: string;
+  image?: string;
+  video?: string;
+  videoSrc?: string;
+  featured?: boolean;
+  featuredOrder?: number;
+  componentNumber?: number;
+  dependencies?: string[];
+  install?: string[];
   qrValue: string;
   appStoreHref: string;
   playStoreHref: string;
@@ -33,7 +41,10 @@ export async function getComponentDoc(slug: string) {
     notFound();
   }
 
-  const [docModule, categories] = await Promise.all([load(), getRegistryCatalog()]);
+  const [docModule, categories] = await Promise.all([
+    load(),
+    getRegistryCatalog(),
+  ]);
   const component = categories
     .flatMap((category) => category.items)
     .find((item) => item.slug === slug);
@@ -45,7 +56,13 @@ export async function getComponentDoc(slug: string) {
   return {
     component,
     Content: docModule.default,
-    meta: docModule.meta,
+    meta: {
+      ...docModule.meta,
+      slug,
+      video: docModule.meta.video ?? docModule.meta.videoSrc,
+      dependencies: docModule.meta.dependencies ?? component.dependencies,
+      install: docModule.meta.install ?? [`watermelon add ${slug}`],
+    },
   };
 }
 

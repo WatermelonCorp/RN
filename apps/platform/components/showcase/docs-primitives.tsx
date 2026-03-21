@@ -1,10 +1,16 @@
+"use client";
+
 import Link from "next/link";
 import { QRCodeSVG } from "qrcode.react";
 import { cn } from "@/lib/utils";
+import { useEffect } from "react";
+import { useTOC } from "@/components/core/toc-context";
+import { GlassContainer } from "@/components/core/3d-container";
 
 export type TocItem = {
   id: string;
   title: string;
+  depth?: number;
 };
 
 export function DocSection({
@@ -19,7 +25,7 @@ export function DocSection({
   className?: string;
 }) {
   return (
-    <section id={id} className={cn("scroll-mt-24 space-y-4", className)}>
+    <section id={id} className={cn("scroll-mt-24 min-w-0 space-y-4", className)}>
       <h2 className="text-base font-medium tracking-tight">{title}</h2>
       {children}
     </section>
@@ -38,7 +44,7 @@ export function DocSubsection({
   className?: string;
 }) {
   return (
-    <section id={id} className={cn("scroll-mt-24 space-y-3", className)}>
+    <section id={id} className={cn("scroll-mt-24 min-w-0 space-y-3", className)}>
       <h3 className="text-sm font-medium tracking-tight">{title}</h3>
       {children}
     </section>
@@ -56,60 +62,52 @@ export function ApiTable({
   }>;
 }) {
   return (
-    <div className="border-border/70 overflow-hidden rounded-2xl border">
-      <table className="w-full text-left text-sm">
-        <thead className="bg-muted/60 text-foreground">
-          <tr>
-            <th className="px-4 py-3 font-medium">prop</th>
-            <th className="px-4 py-3 font-medium">type</th>
-            <th className="px-4 py-3 font-medium">default</th>
-            <th className="px-4 py-3 font-medium">description</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr key={row.prop} className="border-border/70 border-t align-top">
-              <td className="text-foreground px-4 py-3 font-mono text-xs">
-                <span className="bg-muted rounded-md px-1.5 py-0.5">
-                  {row.prop}
-                </span>
-              </td>
-              <td className="text-muted-foreground px-4 py-3 font-mono text-xs">
-                {row.type}
-              </td>
-              <td className="text-muted-foreground px-4 py-3 font-mono text-xs">
-                {row.default || "-"}
-              </td>
-              <td className="text-muted-foreground px-4 py-3 leading-7">
-                {row.description}
-              </td>
+    <GlassContainer variant="strong" className="w-full rounded-3xl p-0.5">
+      <div className="border-border/70 w-full max-w-full overflow-x-auto rounded-[calc(1.5rem-2px)] border bg-card/86">
+        <table className="min-w-[40rem] w-full text-left text-sm">
+          <thead className="bg-muted/54 text-foreground">
+            <tr>
+              <th className="px-4 py-3 font-medium">prop</th>
+              <th className="px-4 py-3 font-medium">type</th>
+              <th className="px-4 py-3 font-medium">default</th>
+              <th className="px-4 py-3 font-medium">description</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr key={row.prop} className="border-border/70 border-t align-top">
+                <td className="text-foreground px-4 py-3 font-mono text-xs">
+                  <span className="bg-muted rounded-md px-1.5 py-0.5">
+                    {row.prop}
+                  </span>
+                </td>
+                <td className="text-muted-foreground px-4 py-3 font-mono text-xs">
+                  {row.type}
+                </td>
+                <td className="text-muted-foreground px-4 py-3 font-mono text-xs">
+                  {row.default || "-"}
+                </td>
+                <td className="text-muted-foreground px-4 py-3 leading-7">
+                  {row.description}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </GlassContainer>
   );
 }
 
 export function OnThisPage({ items }: { items: TocItem[] }) {
-  return (
-    <div className="border-border/70 bg-card/75 rounded-md border p-4 shadow-sm">
-      <p className="text-muted-foreground text-xs font-medium tracking-[0.22em] uppercase">
-        On this page
-      </p>
-      <nav className="mt-4 flex flex-col gap-2">
-        {items.map((item) => (
-          <a
-            key={item.id}
-            href={`#${item.id}`}
-            className="text-muted-foreground hover:text-foreground text-sm transition"
-          >
-            {item.title}
-          </a>
-        ))}
-      </nav>
-    </div>
-  );
+  const { setItems } = useTOC();
+
+  useEffect(() => {
+    setItems(items);
+    return () => setItems([]);
+  }, [items, setItems]);
+
+  return null;
 }
 
 export function PreviewCard({
@@ -174,24 +172,28 @@ export function DocsPager({
   return (
     <div className="grid gap-3 md:grid-cols-2">
       {previous ? (
-        <Link
-          href={previous.href}
-          className="border-border/70 bg-card/70 hover:bg-muted/40 rounded-lg border p-4 transition"
-        >
-          <p className="text-muted-foreground text-sm">Previous</p>
-          <p className="mt-2 text-lg font-medium">{previous.title}</p>
-        </Link>
+        <GlassContainer variant="strong" className="rounded-3xl p-0.5">
+          <Link
+            href={previous.href}
+            className="border-border/70 bg-card/76 hover:bg-muted/36 block rounded-[calc(1.5rem-2px)] border p-5 transition"
+          >
+            <p className="text-muted-foreground text-sm">Previous</p>
+            <p className="mt-2 text-lg font-medium">{previous.title}</p>
+          </Link>
+        </GlassContainer>
       ) : (
         <div />
       )}
       {next ? (
-        <Link
-          href={next.href}
-          className="border-border/70 bg-card/70 hover:bg-muted/40 rounded-lg border p-4 text-right transition"
-        >
-          <p className="text-muted-foreground text-sm">Next</p>
-          <p className="mt-2 text-lg font-medium">{next.title}</p>
-        </Link>
+        <GlassContainer variant="strong" className="rounded-3xl p-0.5">
+          <Link
+            href={next.href}
+            className="border-border/70 bg-card/76 hover:bg-muted/36 block rounded-[calc(1.5rem-2px)] border p-5 text-right transition"
+          >
+            <p className="text-muted-foreground text-sm">Next</p>
+            <p className="mt-2 text-lg font-medium">{next.title}</p>
+          </Link>
+        </GlassContainer>
       ) : null}
     </div>
   );

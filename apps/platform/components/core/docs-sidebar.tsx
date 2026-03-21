@@ -22,28 +22,22 @@ export function DocsSidebar({
   const componentGroups = getComponentGroups();
 
   return (
-    <Sidebar
-      collapsible="none"
-      className="border-border/70 bg-card/80 text-sidebar-foreground sticky top-20 hidden h-[calc(100svh-6rem)] w-full shrink-0 overflow-hidden rounded-sm border shadow-sm [--sidebar-menu-width:100%] lg:flex"
-      {...props}
-    >
-      <SidebarContent className="no-scrollbar w-full overflow-x-hidden px-4 py-2">
-        <SidebarGroup className="gap-2 px-0">
-          <SidebarGroupLabel className="text-muted-foreground px-3 text-[0.65rem] font-medium tracking-[0.22em] uppercase">
+    <Sidebar collapsible="none" className="h-screen" {...props}>
+      <SidebarContent className="no-scrollbar w-full px-4 py-2">
+        <div className="h-3 shrink-0" />
+
+        <SidebarGroup className="gap-1 px-0">
+          <SidebarGroupLabel className="text-sidebar-accent-foreground px-0 text-[0.7rem] font-medium tracking-[0.18em] uppercase">
             Getting Started
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="gap-0.5">
               {DOC_SECTIONS.map(({ name, href }) => (
                 <SidebarMenuItem key={name}>
                   <SidebarMenuButton
                     asChild
-                    isActive={
-                      href === "/components"
-                        ? pathname === href
-                        : pathname.startsWith(href)
-                    }
-                    className="h-9 rounded-xl px-3 text-sm"
+                    isActive={pathname === href}
+                    className="data-[active=true]:border-border/70 data-[active=true]:bg-background h-9 rounded-lg border border-transparent ps-3.5 text-sm hover:bg-transparent active:bg-transparent data-[active=true]:shadow-sm"
                   >
                     <Link href={href}>{name}</Link>
                   </SidebarMenuButton>
@@ -54,18 +48,18 @@ export function DocsSidebar({
         </SidebarGroup>
 
         {componentGroups.map((group) => (
-          <SidebarGroup key={group.title} className="px-0">
-            <SidebarGroupLabel className="text-muted-foreground px-3 text-[0.65rem] font-medium tracking-[0.22em] uppercase">
+          <SidebarGroup key={group.title} className="gap-1 px-0">
+            <SidebarGroupLabel className="text-sidebar-accent-foreground px-0 text-[0.7rem] font-medium tracking-[0.18em] uppercase">
               {group.title}
             </SidebarGroupLabel>
             <SidebarGroupContent>
-              <SidebarMenu>
+              <SidebarMenu className="gap-0.5">
                 {group.items.map((component) => (
                   <SidebarMenuItem key={component.slug}>
                     <SidebarMenuButton
                       asChild
                       isActive={pathname === `/components/${component.slug}`}
-                      className="h-9 rounded-xl px-3 text-sm"
+                      className="data-[active=true]:border-border/70 data-[active=true]:bg-background h-9 rounded-lg border border-transparent ps-3.5 text-sm hover:bg-transparent active:bg-transparent data-[active=true]:shadow-sm"
                     >
                       <Link href={`/components/${component.slug}`}>
                         {component.title}

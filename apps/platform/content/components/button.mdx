@@ -1,12 +1,28 @@
 import { CodeBlock } from "@/components/showcase/code-block";
-import { ApiTable, DocSection, DocSubsection } from "@/components/showcase/docs-primitives";
+import {
+  ApiTable,
+  DocSection,
+  DocSubsection,
+} from "@/components/showcase/docs-primitives";
 
 export const meta = {
   title: "Button",
+  slug: "button",
   description:
     "A cross-platform pressable with size and variant APIs for primary actions, secondary actions, and icon-only controls.",
   category: "Buttons",
-  videoSrc: "/previews/button-preview.mp4",
+  image: "/logo.png",
+  video: "/previews/button-preview.mp4",
+  featured: true,
+  featuredOrder: 0,
+  componentNumber: 1,
+  dependencies: [
+    "@rn-primitives/slot",
+    "class-variance-authority",
+    "lucide-react-native",
+    "react-native-svg",
+  ],
+  install: ["watermelon add button"],
   qrValue: "showcase://components/button",
   appStoreHref: "https://apps.apple.com/app/expo-go/id982107779",
   playStoreHref:
@@ -18,10 +34,10 @@ export const meta = {
   toc: [
     { id: "import", title: "Import" },
     { id: "usage", title: "Usage" },
-    { id: "basic-usage", title: "Basic usage" },
-    { id: "variants", title: "Variants" },
-    { id: "sizes", title: "Sizes" },
-    { id: "with-icons", title: "With text" },
+    { id: "basic-usage", title: "Basic usage", depth: 3 },
+    { id: "variants", title: "Variants", depth: 3 },
+    { id: "sizes", title: "Sizes", depth: 3 },
+    { id: "with-icons", title: "With text", depth: 3 },
     { id: "api-reference", title: "API Reference" },
   ],
 };
@@ -39,41 +55,41 @@ import { Text } from "@/components/ui/text";`}
     and shares text styling through the registry <code>Text</code> primitive.
   </p>
 
-  <DocSubsection id="basic-usage" title="Basic Usage">
-    <p>Use the default button for primary actions.</p>
-    <CodeBlock language="tsx" title="Basic Usage">
-      {`<Button>
+<DocSubsection id="basic-usage" title="Basic Usage">
+  <p>Use the default button for primary actions.</p>
+  <CodeBlock language="tsx" title="Basic Usage">
+    {`<Button>
   <Text>Continue</Text>
 </Button>`}
-    </CodeBlock>
-  </DocSubsection>
+  </CodeBlock>
+</DocSubsection>
 
-  <DocSubsection id="variants" title="Variants">
-    <p>
-      Choose from <code>default</code>, <code>secondary</code>,{" "}
-      <code>outline</code>, <code>ghost</code>, <code>destructive</code>, and{" "}
-      <code>link</code>.
-    </p>
-    <CodeBlock language="tsx" title="Variants">
-      {`<Button variant="default"><Text>Primary</Text></Button>
+<DocSubsection id="variants" title="Variants">
+  <p>
+    Choose from <code>default</code>, <code>secondary</code>,{" "}
+    <code>outline</code>, <code>ghost</code>, <code>destructive</code>, and{" "}
+    <code>link</code>.
+  </p>
+  <CodeBlock language="tsx" title="Variants">
+    {`<Button variant="default"><Text>Primary</Text></Button>
 <Button variant="secondary"><Text>Secondary</Text></Button>
 <Button variant="outline"><Text>Outline</Text></Button>
 <Button variant="ghost"><Text>Ghost</Text></Button>
 <Button variant="destructive"><Text>Delete</Text></Button>`}
-    </CodeBlock>
-  </DocSubsection>
+  </CodeBlock>
+</DocSubsection>
 
-  <DocSubsection id="sizes" title="Sizes">
-    <p>
-      Match the control to the surface with <code>sm</code>,{" "}
-      <code>default</code>, <code>lg</code>, or <code>icon</code>.
-    </p>
-    <CodeBlock language="tsx" title="Sizes">
-      {`<Button size="sm"><Text>Small</Text></Button>
+<DocSubsection id="sizes" title="Sizes">
+  <p>
+    Match the control to the surface with <code>sm</code>, <code>default</code>,{" "}
+    <code>lg</code>, or <code>icon</code>.
+  </p>
+  <CodeBlock language="tsx" title="Sizes">
+    {`<Button size="sm"><Text>Small</Text></Button>
 <Button size="default"><Text>Default</Text></Button>
 <Button size="lg"><Text>Large</Text></Button>`}
-    </CodeBlock>
-  </DocSubsection>
+  </CodeBlock>
+</DocSubsection>
 
   <DocSubsection id="with-icons" title="With Text">
     <p>

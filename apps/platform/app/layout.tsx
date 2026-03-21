@@ -3,7 +3,6 @@ import { Geist_Mono, Newsreader, Roboto } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { Navbar } from "@/components/core/navbar";
 import { ThemeProvider } from "next-themes";
 
 const roboto = Roboto({
@@ -48,7 +47,6 @@ export default function RootLayout({
           enableSystem
         >
           <TooltipProvider>
-            <Navbar />
             <div className="min-h-[calc(100vh-var(--header-height,56px))]">
               {children}
             </div>
