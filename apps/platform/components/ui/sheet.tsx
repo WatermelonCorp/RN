@@ -1,6 +1,6 @@
 "use client"
 
-import type { ComponentPropsWithoutRef } from "react"
+import * as React from "react"
 import { Dialog as SheetPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/utils"
@@ -86,10 +86,7 @@ function SheetContent({
   )
 }
 
-function SheetHeader({
-  className,
-  ...props
-}: ComponentPropsWithoutRef<"div">) {
+function SheetHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="sheet-header"
@@ -99,10 +96,7 @@ function SheetHeader({
   )
 }
 
-function SheetFooter({
-  className,
-  ...props
-}: ComponentPropsWithoutRef<"div">) {
+function SheetFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="sheet-footer"
@@ -119,7 +113,10 @@ function SheetTitle({
   return (
     <SheetPrimitive.Title
       data-slot="sheet-title"
-      className={cn("text-base font-medium text-foreground", className)}
+      className={cn(
+        "text-base font-medium text-foreground",
+        className
+      )}
       {...props}
     />
   )

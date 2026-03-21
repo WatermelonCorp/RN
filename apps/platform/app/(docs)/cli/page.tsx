@@ -1,6 +1,12 @@
 import { PageHeader } from "@/components/core/typography";
 import { CodeBlock } from "@/components/showcase/code-block";
 import MotionDiv from "@/components/core/motion-div";
+import {
+  DocSection,
+  OnThisPage,
+} from "@/components/showcase/docs-primitives";
+
+const toc = [{ id: "commands", title: "Commands" }];
 
 export default function CliPage() {
   return (
@@ -11,17 +17,21 @@ export default function CliPage() {
       transition={{ duration: 0.3 }}
       className="mr-auto max-w-5xl space-y-8"
     >
+      <OnThisPage items={toc} />
+
       <PageHeader
         badge="CLI"
         title="Add components one command at a time."
         subTitle="The CLI resolves registry dependencies, installs npm packages, and writes transformed component files into your project structure."
       />
 
-      <CodeBlock language="bash" title="Commands" showLineNumbers={false}>
-        {`watermelon init
+      <DocSection id="commands" title="Commands">
+        <CodeBlock language="bash" title="Commands" showLineNumbers={false}>
+          {`watermelon init
 watermelon add button
 watermelon add button text`}
-      </CodeBlock>
+        </CodeBlock>
+      </DocSection>
     </MotionDiv>
   );
 }

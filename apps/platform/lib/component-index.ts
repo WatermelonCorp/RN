@@ -49,9 +49,10 @@ export function ArticleHeader() {
 };
 
 export const DOC_SECTIONS = [
-  { name: "Overview", href: "/components" },
+  { name: "Introduction", href: "/introduction" },
   { name: "Installation", href: "/installation" },
   { name: "CLI", href: "/cli" },
+  { name: "Registry", href: "/registry" },
 ] as const;
 
 export function getComponentMeta(slug: string) {

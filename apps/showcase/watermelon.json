@@ -1,0 +1,27 @@
+{
+  "style": "default",
+  "tailwind": {
+    "config": "tailwind.config.js",
+    "css": "global.css",
+    "baseColor": "slate"
+  },
+  "aliases": {
+    "components": "@/components",
+    "utils": "@/lib/utils"
+  },
+  "registries": {
+    "@watermelon": {
+      "name": "@watermelon",
+      "homepage": "https://registry.watermelon.dev",
+      "url": "https://registry.watermelon.dev/{name}.json",
+      "description": "Official Watermelon component registry."
+    },
+    "@aceternity": {
+      "name": "@aceternity",
+      "homepage": "https://aceternity.com",
+      "url": "https://aceternity.com/registry/{name}.json",
+      "description": "Aceternity component registry."
+    }
+  },
+  "defaultRegistry": "https://registry.watermelon.dev/{name}.json"
+}

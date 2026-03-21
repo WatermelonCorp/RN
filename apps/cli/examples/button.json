@@ -1,0 +1,16 @@
+{
+  "name": "button",
+  "dependencies": [
+    "clsx",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [
+    "@watermelon/utils"
+  ],
+  "files": [
+    {
+      "path": "components/ui/button.tsx",
+      "url": "https://registry.watermelon.dev/files/components/ui/button.tsx"
+    }
+  ]
+}
