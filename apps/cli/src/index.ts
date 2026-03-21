@@ -3,31 +3,29 @@ import { Command } from 'commander';
 import chalk from 'chalk';
 import prompts from 'prompts';
 import ora from 'ora';
-import path from 'path';
-import fs from 'fs-extra';
-import { getConfig, setConfig, DEFAULT_CONFIG, type WatermelonConfig } from './utils/config.js';
-import { fetchRegistry, fetchComponentFile, getAllComponentDependencies, type Registry } from './utils/registry.js';
-import { installDependencies, getMissingDependencies } from './utils/dependencies.js';
-import { writeComponent, transformImports, ensureUtilsFile, ensureComponentsDirectory } from './utils/files.js';
+import { DEFAULT_CONFIG, getConfig, setConfig, type WatermelonConfig } from './utils/config.js';
+import { collectComponents, downloadRegistryFile } from './utils/registry.js';
+import { getMissingDependencies, installDependencies } from './utils/dependencies.js';
+import { ensureComponentsDirectory, ensureUtilsFile, installFiles } from './utils/files.js';
 
 const program = new Command();
 
 program
     .name('watermelon')
     .description('CLI for Watermelon Design System')
-    .version('0.0.1');
+    .version('0.0.2');
 
 program
     .command('init')
     .description('Initialize Watermelon in your project')
     .action(async () => {
-        console.log(chalk.bold.cyan('🍉 Welcome to Watermelon!\n'));
+        console.log(chalk.bold.cyan('Watermelon setup\n'));
 
         const cwd = process.cwd();
         const existingConfig = await getConfig(cwd);
 
         if (existingConfig) {
-            console.log(chalk.yellow('⚠️  Watermelon is already initialized in this project.'));
+            console.log(chalk.yellow('Watermelon is already initialized in this project.'));
             const { overwrite } = await prompts({
                 type: 'confirm',
                 name: 'overwrite',
@@ -84,16 +82,10 @@ program
         const spinner = ora('Setting up project...').start();
 
         try {
-            // Save config
             await setConfig(cwd, config);
-
-            // Create directories
             await ensureComponentsDirectory(cwd, config);
-
-            // Create utils file
             await ensureUtilsFile(cwd, config);
 
-            // Install required dependencies
             const requiredDeps = [
                 'clsx',
                 'tailwind-merge',
@@ -107,118 +99,131 @@ program
                 await installDependencies(missingDeps, cwd);
             }
 
-            spinner.succeed(chalk.green('✓ Watermelon initialized successfully!'));
-
-            console.log('\n' + chalk.bold('Next steps:'));
-            console.log(chalk.gray('  1. Add components: ') + chalk.cyan('watermelon add button'));
-            console.log(chalk.gray('  2. Import in your app: ') + chalk.cyan('import { Button } from "@/components/ui/button"'));
-            console.log('');
+            spinner.succeed(chalk.green('Watermelon initialized successfully.'));
+            console.log(`\n${chalk.bold('Next steps')}`);
+            console.log(`  ${chalk.gray('Add a component:')} ${chalk.cyan('watermelon add button')}`);
+            console.log(`  ${chalk.gray('Use a namespace:')} ${chalk.cyan('watermelon add @aceternity/card')}`);
         } catch (error) {
             spinner.fail('Failed to initialize Watermelon');
-            console.error(chalk.red(error instanceof Error ? error.message : String(error)));
+            console.error(chalk.red(getErrorMessage(error)));
             process.exit(1);
         }
     });
 
 program
     .command('add')
-    .description('Add components to your project')
-    .argument('[components...]', 'components to add')
-    .action(async (components: string[]) => {
+    .description('Add components from one or more registries')
+    .argument('<components...>', 'components to add')
+    .option('-f, --force', 'overwrite existing files')
+    .option('-p, --path <path>', 'custom install directory')
+    .option('--dry-run', 'preview changes without writing files or installing dependencies')
+    .action(async (components: string[], options: AddOptions) => {
         const cwd = process.cwd();
         const config = await getConfig(cwd);
 
         if (!config) {
-            console.log(chalk.red('✗ Watermelon is not initialized in this project.'));
-            console.log(chalk.gray('  Run ') + chalk.cyan('watermelon init') + chalk.gray(' first.'));
-            return;
+            console.log(chalk.red('Watermelon is not initialized in this project.'));
+            console.log(`${chalk.gray('Run')} ${chalk.cyan('watermelon init')} ${chalk.gray('first.')}`);
+            process.exit(1);
         }
 
-        if (!components || components.length === 0) {
-            console.log(chalk.red('✗ Please specify at least one component.'));
-            console.log(chalk.gray('  Example: ') + chalk.cyan('watermelon add button'));
-            return;
-        }
-
-        const spinner = ora('Fetching registry...').start();
+        const spinner = ora('Resolving component manifests...').start();
 
         try {
-            const registry = await fetchRegistry();
-            spinner.succeed('Registry fetched');
+            const resolvedComponents = await collectComponents(components, config);
+            spinner.succeed(`Resolved ${resolvedComponents.length} component${resolvedComponents.length === 1 ? '' : 's'}.`);
 
-            // Validate all components exist
-            for (const componentName of components) {
-                if (!registry.components[componentName]) {
-                    console.log(chalk.red(`✗ Component "${componentName}" not found in registry.`));
-                    console.log(chalk.gray('  Available components: ') +
-                        Object.keys(registry.components).join(', '));
-                    return;
-                }
+            const dependencyNames = Array.from(
+                new Set(resolvedComponents.flatMap((component) => component.manifest.dependencies ?? []))
+            ).sort();
+
+            const missingDependencies = await getMissingDependencies(dependencyNames, cwd);
+
+            if (options.dryRun) {
+                printDryRunSummary(resolvedComponents, missingDependencies, options.path);
+            } else if (missingDependencies.length > 0) {
+                await installDependencies(missingDependencies, cwd);
             }
 
-            // Get all dependencies
-            const allComponents = new Set<string>();
-            for (const componentName of components) {
-                const deps = getAllComponentDependencies(componentName, registry);
-                deps.forEach(dep => allComponents.add(dep.name));
-            }
+            const fileSpinner = ora(options.dryRun ? 'Planning file changes...' : 'Installing component files...').start();
 
-            console.log(chalk.bold(`\nComponents to install: `) +
-                Array.from(allComponents).join(', '));
+            const plannedFiles = await installFiles(resolvedComponents, {
+                cwd,
+                config,
+                installPath: options.path,
+                force: options.force,
+                dryRun: options.dryRun,
+                downloadFile: (component, file) => downloadRegistryFile(component.specifier.fileBaseUrl, file),
+            });
 
-            // Collect all npm dependencies
-            const allNpmDeps = new Set<string>();
-            for (const componentName of allComponents) {
-                const component = registry.components[componentName];
-                if (component.dependencies) {
-                    component.dependencies.forEach(dep => allNpmDeps.add(dep));
-                }
-            }
-
-            // Check for missing dependencies
-            const missingDeps = await getMissingDependencies(
-                Array.from(allNpmDeps),
-                cwd
+            fileSpinner.succeed(
+                options.dryRun
+                    ? `Planned ${plannedFiles.length} file change${plannedFiles.length === 1 ? '' : 's'}.`
+                    : `Installed ${plannedFiles.length} file${plannedFiles.length === 1 ? '' : 's'}.`
             );
 
-            if (missingDeps.length > 0) {
-                console.log(chalk.yellow(`\n📦 Installing ${missingDeps.length} dependencies...\n`));
-                await installDependencies(missingDeps, cwd);
+            if (options.dryRun) {
+                printDryRunFiles(plannedFiles);
+                return;
             }
 
-            // Install components
-            console.log(chalk.bold('\n📝 Installing components...\n'));
-
-            for (const componentName of allComponents) {
-                const componentSpinner = ora(`Installing ${componentName}...`).start();
-                const component = registry.components[componentName];
-
-                try {
-                    for (const file of component.files) {
-                        // Fetch the component file content
-                        const content = await fetchComponentFile(file.path);
-
-                        // Transform imports to use user's aliases
-                        const transformedContent = transformImports(content, config);
-
-                        // Write to disk
-                        await writeComponent(file.path, transformedContent, cwd);
-                    }
-
-                    componentSpinner.succeed(chalk.green(`${componentName} installed`));
-                } catch (error) {
-                    componentSpinner.fail(chalk.red(`Failed to install ${componentName}`));
-                    throw error;
-                }
+            console.log(`\n${chalk.bold.green('Installed components')}`);
+            for (const component of resolvedComponents) {
+                console.log(`  ${chalk.cyan(component.specifier.raw)}`);
             }
 
-            console.log(chalk.bold.green('\n✓ All components installed successfully!\n'));
-
+            if (missingDependencies.length > 0) {
+                console.log(`\n${chalk.bold('Installed dependencies')}`);
+                console.log(`  ${missingDependencies.join(', ')}`);
+            }
         } catch (error) {
             spinner.fail('Failed to add components');
-            console.error(chalk.red(error instanceof Error ? error.message : String(error)));
+            console.error(chalk.red(getErrorMessage(error)));
             process.exit(1);
         }
     });
 
 program.parse();
+
+type AddOptions = {
+    force?: boolean;
+    path?: string;
+    dryRun?: boolean;
+};
+
+function printDryRunSummary(
+    components: Awaited<ReturnType<typeof collectComponents>>,
+    missingDependencies: string[],
+    installPath?: string
+) {
+    console.log(`\n${chalk.bold('Dry run')}`);
+    console.log(`  ${chalk.gray('Components:')} ${components.map((component) => component.specifier.raw).join(', ')}`);
+
+    if (installPath) {
+        console.log(`  ${chalk.gray('Install path:')} ${installPath}`);
+    }
+
+    if (missingDependencies.length > 0) {
+        console.log(`  ${chalk.gray('Missing dependencies:')} ${missingDependencies.join(', ')}`);
+    } else {
+        console.log(`  ${chalk.gray('Missing dependencies:')} none`);
+    }
+}
+
+function printDryRunFiles(
+    plannedFiles: Array<{ relativePath: string; exists: boolean }>
+) {
+    if (plannedFiles.length === 0) {
+        return;
+    }
+
+    console.log(`\n${chalk.bold('Files')}`);
+    for (const file of plannedFiles) {
+        const label = file.exists ? chalk.yellow('overwrite') : chalk.green('create');
+        console.log(`  ${label} ${file.relativePath}`);
+    }
+}
+
+function getErrorMessage(error: unknown): string {
+    return error instanceof Error ? error.message : String(error);
+}
