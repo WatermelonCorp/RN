@@ -1,0 +1,118 @@
+---
+title: Text
+description: A semantic text primitive for paragraphs, headings, inline code, muted copy, and reusable typography scales.
+kind: component
+category: Typography
+image: /logo.png
+video: /previews/text-preview.mp4
+featured: true
+featuredOrder: 1
+componentNumber: 2
+dependencies:
+  - "@rn-primitives/slot"
+  - class-variance-authority
+install:
+  - watermelon add text
+qrValue: showcase://components/text
+appStoreHref: https://apps.apple.com/app/expo-go/id982107779
+playStoreHref: https://play.google.com/store/apps/details?id=host.exp.exponent
+sourceHref: https://github.com/vanshpatelx/RN/blob/main/packages/registry/src/components/ui/text.tsx
+registryHref: https://github.com/vanshpatelx/RN/blob/main/packages/registry/registry.json
+---
+
+import { CodeBlock } from "@/components/showcase/code-block";
+import {
+  ApiTable,
+  DocSection,
+  DocSubsection,
+} from "@/components/showcase/docs-primitives";
+
+## Import
+
+<DocSection>
+  <CodeBlock language="tsx" title="Import" showLineNumbers={false}>
+    {`import { Text } from "@/components/ui/text";`}
+  </CodeBlock>
+</DocSection>
+
+## Usage
+
+<DocSection>
+  <div>
+    The <code>Text</code> component lets you define hierarchy once and reuse it
+    across native screens, settings pages, and longer-form product surfaces.
+  </div>
+
+  ### Headings
+
+  <DocSubsection>
+    <div>Use heading variants to create clear section breaks and semantic roles.</div>
+    <CodeBlock language="tsx" title="Headings">
+      {`<Text variant="h1">Ship native UI faster.</Text>
+<Text variant="h2">Overview</Text>
+<Text variant="h3">Installation</Text>`}
+    </CodeBlock>
+  </DocSubsection>
+
+  ### Body Copy
+
+  <DocSubsection>
+    <div>
+      Pair <code>p</code>, <code>lead</code>, <code>muted</code>, and{" "}
+      <code>small</code> for readable layouts with more contrast control.
+    </div>
+    <CodeBlock language="tsx" title="Body Copy">
+      {`<Text variant="lead">A composable type system for React Native.</Text>
+<Text variant="p">
+  Build headings, helper text, and long-form copy from one primitive.
+</Text>
+<Text variant="muted">Updated 2 minutes ago</Text>`}
+    </CodeBlock>
+  </DocSubsection>
+
+  ### Inline Code
+
+  <DocSubsection>
+    <div>
+      Use the inline code style for package names, props, and snippets that
+      need stronger emphasis.
+    </div>
+    <CodeBlock language="tsx" title="Inline Code">
+      {`<Text>
+  Install <Text variant="code">watermelon add text</Text> to copy the primitive
+  into your project.
+</Text>`}
+    </CodeBlock>
+  </DocSubsection>
+</DocSection>
+
+## API Reference
+
+<DocSection>
+  <div>
+    <code>Text</code> extends the React Native <code>Text</code> API and adds a{" "}
+    <code>variant</code> prop for semantic styling.
+  </div>
+  <ApiTable
+    rows={[
+      {
+        prop: "variant",
+        type: `"default" | "h1" | "h2" | "h3" | "h4" | "p" | "blockquote" | "code" | "lead" | "large" | "small" | "muted"`,
+        default: `"default"`,
+        description: "Selects the typography scale and semantic role.",
+      },
+      {
+        prop: "asChild",
+        type: "boolean",
+        default: "false",
+        description: "Lets the text styles be passed to a slot child.",
+      },
+      {
+        prop: "className",
+        type: "string",
+        default: "-",
+        description: "Adds custom NativeWind classes on top of the variant.",
+      },
+    ]}
+  />
+</DocSection>

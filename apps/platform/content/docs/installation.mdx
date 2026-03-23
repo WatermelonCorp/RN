@@ -1,0 +1,37 @@
+---
+title: Set up Watermelon in a React Native project.
+description: Initialize the project once, then add only the registry primitives you want. The CLI handles file output and package dependencies.
+badge: Installation
+kind: guide
+---
+
+import { CodeBlock } from "@/components/showcase/code-block";
+import { DocSection } from "@/components/showcase/docs-primitives";
+
+## Initialize
+
+<DocSection>
+  <CodeBlock language="bash" title="Initialize" showLineNumbers={false}>
+    {`watermelon init
+watermelon add button text`}
+  </CodeBlock>
+</DocSection>
+
+## Config file
+
+<DocSection>
+  <CodeBlock language="json" title="watermelon.json">
+    {`{
+  "style": "default",
+  "tailwind": {
+    "config": "tailwind.config.js",
+    "css": "global.css",
+    "baseColor": "slate"
+  },
+  "aliases": {
+    "components": "@/components",
+    "utils": "@/lib/utils"
+  }
+}`}
+  </CodeBlock>
+</DocSection>

@@ -1,5 +1,5 @@
 import path from "node:path";
-import createMDX from "@next/mdx";
+import { createMDX } from "fumadocs-mdx/next";
 import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 
 initOpenNextCloudflareForDev();

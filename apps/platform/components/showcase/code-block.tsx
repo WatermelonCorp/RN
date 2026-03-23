@@ -148,8 +148,8 @@ export function CodeBlock({
         className,
       )}
     >
-      <div className="border-border/70 bg-card/88 relative min-w-0 overflow-hidden rounded-[calc(1rem-2px)] border">
-        <div className="border-border/60 bg-background/82 flex items-center justify-between border-b px-1 py-1">
+      <div className="border-border/70 bg-card/88 relative flex min-w-0 max-w-full flex-col overflow-hidden rounded-[calc(1rem-2px)] border">
+        <div className="border-border/60 bg-background/82 sticky top-0 z-10 flex shrink-0 items-center justify-between border-b px-1 py-1 backdrop-blur-md">
           <p className="text-muted-foreground pl-2 text-xs font-medium tracking-[0.24em] lowercase">
             {title || language}
           </p>
@@ -157,44 +157,47 @@ export function CodeBlock({
           <CopyButton variant="secondary" size="xs" content={code} />
         </div>
 
-        {syntax ? (
-          <syntax.SyntaxHighlighter
-            language={language}
-            style={isDark ? syntax.oneDark : syntax.oneLight}
-            useInlineStyles
-            className="text-foreground"
-            showLineNumbers={mobile ? false : showLineNumbers}
-            customStyle={{
-              margin: 0,
-              padding: "1rem",
-              fontSize: "13px",
-              lineHeight: "1.6",
-              background: "transparent",
-              overflow: "auto",
-              width: "100%",
-              maxWidth: "100%",
-              whiteSpace: "pre-wrap",
-              wordBreak: "break-word",
-            }}
-            codeTagProps={{
-              style: {
-                fontFamily:
-                  "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
-                whiteSpace: "pre-wrap",
-                wordBreak: "break-word",
-              },
-            }}
-            wrapLongLines
-          >
-            {code}
-          </syntax.SyntaxHighlighter>
-        ) : (
-          <pre className="m-0 max-w-full overflow-x-auto p-4 text-[13px] leading-[1.6] break-words whitespace-pre-wrap">
-            <code className="font-mono break-words whitespace-pre-wrap">
+        <div className="max-h-[min(70vh,40rem)] min-h-0 overflow-auto">
+          {syntax ? (
+            <syntax.SyntaxHighlighter
+              language={language}
+              style={isDark ? syntax.oneDark : syntax.oneLight}
+              useInlineStyles
+              className="text-foreground"
+              showLineNumbers={mobile ? false : showLineNumbers}
+              customStyle={{
+                margin: 0,
+                padding: "1rem",
+                fontSize: "13px",
+                lineHeight: "1.6",
+                background: "transparent",
+                overflowX: "auto",
+                overflowY: "visible",
+                minWidth: "100%",
+                width: "max-content",
+                maxWidth: "none",
+                whiteSpace: "pre",
+                wordBreak: "normal",
+              }}
+              codeTagProps={{
+                style: {
+                  fontFamily:
+                    "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+                  whiteSpace: "pre",
+                  wordBreak: "normal",
+                },
+              }}
+            >
               {code}
-            </code>
-          </pre>
-        )}
+            </syntax.SyntaxHighlighter>
+          ) : (
+            <pre className="m-0 min-w-full w-max overflow-x-auto overflow-y-visible p-4 text-[13px] leading-[1.6] whitespace-pre">
+              <code className="font-mono whitespace-pre">
+                {code}
+              </code>
+            </pre>
+          )}
+        </div>
       </div>
     </GlassContainer>
   );

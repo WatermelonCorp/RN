@@ -1,17 +1,23 @@
+import type { TOCItemType } from "fumadocs-core/toc";
 import { ComponentsIndexView } from "@/components/showcase/component-docs";
+import { getRegistryCatalog } from "@/lib/registry-catalog";
 import { OnThisPage } from "@/components/showcase/docs-primitives";
 
-const toc = [
-  { id: "component-overview", title: "Overview" },
-  { id: "buttons", title: "Buttons" },
-  { id: "typography", title: "Typography" },
-];
+export default async function ComponentsPage() {
+  const categories = await getRegistryCatalog();
+  const toc: TOCItemType[] = [
+    { url: "#component-overview", title: "Overview", depth: 2 },
+    ...categories.map((category) => ({
+      url: `#${category.slug}`,
+      title: category.title,
+      depth: 2,
+    })),
+  ];
 
-export default function ComponentsPage() {
   return (
     <>
       <OnThisPage items={toc} />
-      <ComponentsIndexView />
+      <ComponentsIndexView categories={categories} />
     </>
   );
 }

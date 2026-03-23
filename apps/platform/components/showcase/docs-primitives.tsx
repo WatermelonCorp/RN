@@ -2,31 +2,23 @@
 
 import Link from "next/link";
 import { QRCodeSVG } from "qrcode.react";
+import type { TOCItemType } from "fumadocs-core/toc";
 import { cn } from "@/lib/utils";
 import { useEffect } from "react";
 import { useTOC } from "@/components/core/toc-context";
 import { GlassContainer } from "@/components/core/3d-container";
 
-export type TocItem = {
-  id: string;
-  title: string;
-  depth?: number;
-};
-
 export function DocSection({
   id,
-  title,
   children,
   className,
 }: {
-  id: string;
-  title: string;
+  id?: string;
   children: React.ReactNode;
   className?: string;
 }) {
   return (
     <section id={id} className={cn("scroll-mt-24 min-w-0 space-y-4", className)}>
-      <h2 className="text-base font-medium tracking-tight">{title}</h2>
       {children}
     </section>
   );
@@ -34,18 +26,15 @@ export function DocSection({
 
 export function DocSubsection({
   id,
-  title,
   children,
   className,
 }: {
-  id: string;
-  title: string;
+  id?: string;
   children: React.ReactNode;
   className?: string;
 }) {
   return (
     <section id={id} className={cn("scroll-mt-24 min-w-0 space-y-3", className)}>
-      <h3 className="text-sm font-medium tracking-tight">{title}</h3>
       {children}
     </section>
   );
@@ -99,7 +88,7 @@ export function ApiTable({
   );
 }
 
-export function OnThisPage({ items }: { items: TocItem[] }) {
+export function OnThisPage({ items }: { items: TOCItemType[] }) {
   const { setItems } = useTOC();
 
   useEffect(() => {
