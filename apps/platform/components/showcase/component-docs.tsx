@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { getRegistryCatalog } from "@/lib/registry-catalog";
+import type { ShowcaseCategory } from "@/lib/registry-catalog";
 import Image from "next/image";
 import { PageHeader } from "../core/typography";
 
-export async function ComponentsIndexView() {
-  const categories = await getRegistryCatalog();
-
+export function ComponentsIndexView({
+  categories,
+}: {
+  categories: ShowcaseCategory[];
+}) {
   return (
     <div className="space-y-8">
       <section id="component-overview" className="scroll-mt-24">

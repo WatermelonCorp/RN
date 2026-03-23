@@ -24,7 +24,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { Kbd } from "../ui/kbd";
 import { usePathname, useRouter } from "next/navigation";
-import { DOC_SECTIONS, getComponentGroups } from "@/lib/component-index";
+import type { CommandLink } from "@/lib/docs-navigation";
 
 const ROOT_LINKS = [
   {
@@ -32,39 +32,42 @@ const ROOT_LINKS = [
     href: "/",
     keywords: ["landing", "overview", "start"],
   },
-  ...DOC_SECTIONS.map((section) => ({
-    label: section.name,
-    href: section.href,
-    keywords: ["docs", "components", section.name.toLowerCase()],
-  })),
 ];
 
-export function CommandMenu() {
+export function CommandMenu({
+  links,
+}: {
+  links: {
+    guides: CommandLink[];
+    components: CommandLink[];
+  };
+}) {
   const [open, setOpen] = React.useState(false);
   const router = useRouter();
   const pathname = usePathname();
-  const componentGroups = React.useMemo(() => getComponentGroups(), []);
-
-  const componentLinks = React.useMemo(
+  const navigationLinks = React.useMemo(
+    () => [...ROOT_LINKS, ...links.guides],
+    [links.guides],
+  );
+  const componentGroups = React.useMemo(
     () =>
-      componentGroups.flatMap((group) =>
-        group.items.map((component) => ({
-          label: component.title,
-          href: `/components/${component.slug}`,
-          keywords: [
-            component.slug,
-            component.category.toLowerCase(),
-            ...component.description.toLowerCase().split(/\s+/).slice(0, 6),
-          ],
-          group: group.title,
-        })),
+      Array.from(
+        links.components.reduce<Map<string, CommandLink[]>>((acc, item) => {
+          const key = item.group ?? "Components";
+          const bucket = acc.get(key) ?? [];
+          bucket.push(item);
+          acc.set(key, bucket);
+          return acc;
+        }, new Map()),
       ),
-    [componentGroups],
+    [links.components],
   );
 
   React.useEffect(() => {
-    [...ROOT_LINKS, ...componentLinks].forEach(({ href }) => router.prefetch(href));
-  }, [router, componentLinks]);
+    [...navigationLinks, ...links.components].forEach(({ href }) =>
+      router.prefetch(href),
+    );
+  }, [router, navigationLinks, links.components]);
 
   React.useEffect(() => {
     const down = (event: KeyboardEvent) => {
@@ -121,7 +124,7 @@ export function CommandMenu() {
             <CommandEmpty>No matching pages or components.</CommandEmpty>
 
             <CommandGroup heading="Navigation">
-              {ROOT_LINKS.map((item) => (
+              {navigationLinks.map((item) => (
                 <CommandItem
                   key={item.href}
                   value={`${item.label} ${item.keywords.join(" ")}`}
@@ -141,13 +144,9 @@ export function CommandMenu() {
 
             <CommandSeparator />
 
-            {componentGroups.map((group) => {
-              const items = componentLinks.filter(
-                (item) => item.group === group.title,
-              );
-
+            {componentGroups.map(([group, items]) => {
               return (
-                <CommandGroup key={group.title} heading={group.title}>
+                <CommandGroup key={group} heading={group}>
                   {items.map((item) => (
                     <CommandItem
                       key={item.href}

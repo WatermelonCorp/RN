@@ -1,32 +1,24 @@
 "use client";
 
-import React, { createContext, useContext, useState, useCallback } from "react";
-
-export type TocItem = {
-  id: string;
-  title: string;
-  depth?: number;
-};
+import React, { createContext, useCallback, useContext, useState } from "react";
+import type { TOCItemType } from "fumadocs-core/toc";
 
 type TOCContextType = {
-  items: TocItem[];
-  setItems: (items: TocItem[]) => void;
-  activeId: string | null;
-  setActiveId: (id: string | null) => void;
+  items: TOCItemType[];
+  setItems: (items: TOCItemType[]) => void;
 };
 
 const TOCContext = createContext<TOCContextType | undefined>(undefined);
 
 export function TOCProvider({ children }: { children: React.ReactNode }) {
-  const [items, setItemsState] = useState<TocItem[]>([]);
-  const [activeId, setActiveId] = useState<string | null>(null);
+  const [items, setItemsState] = useState<TOCItemType[]>([]);
 
-  const setItems = useCallback((newItems: TocItem[]) => {
+  const setItems = useCallback((newItems: TOCItemType[]) => {
     setItemsState(newItems);
   }, []);
 
   return (
-    <TOCContext.Provider value={{ items, setItems, activeId, setActiveId }}>
+    <TOCContext.Provider value={{ items, setItems }}>
       {children}
     </TOCContext.Provider>
   );

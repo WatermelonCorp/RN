@@ -1,0 +1,128 @@
+---
+title: Build React Native interfaces with a registry-first workflow.
+description: Watermelon brings a shadcn-style installation flow to React Native so you can add only the primitives you need, keep the source in your app, and customize the output without fighting a black-box package.
+badge: Introduction
+kind: guide
+---
+
+import { CodeBlock } from "@/components/showcase/code-block";
+import {
+  DocSection,
+  DocSubsection,
+} from "@/components/showcase/docs-primitives";
+
+## What is Watermelon?
+
+<DocSection>
+  <div className="text-muted-foreground text-sm leading-7">
+    Watermelon is a React Native component registry and CLI. Instead of
+    shipping one giant UI dependency, it lets you pull installable primitives
+    like <code>button</code> and <code>text</code> directly into your project.
+  </div>
+  <div className="text-muted-foreground text-sm leading-7">
+    The result is a docs-and-registry workflow that feels familiar if you have
+    used shadcn on the web, but tuned for native app structure, NativeWind
+    styling, and Expo-friendly local development.
+  </div>
+</DocSection>
+
+## Why it exists
+
+<DocSection>
+  <div className="grid gap-4 md:grid-cols-2">
+    <div className="border-border/70 bg-card/70 rounded-2xl border p-5">
+      <h3 className="text-base font-medium">Own the code</h3>
+      <div className="text-muted-foreground mt-2 text-sm leading-7">
+        Installed components live in your codebase, so refactors, animations,
+        and design tweaks stay under your control.
+      </div>
+    </div>
+    <div className="border-border/70 bg-card/70 rounded-2xl border p-5">
+      <h3 className="text-base font-medium">Install incrementally</h3>
+      <div className="text-muted-foreground mt-2 text-sm leading-7">
+        Start with a couple of primitives, then layer in more only when the
+        product actually needs them.
+      </div>
+    </div>
+    <div className="border-border/70 bg-card/70 rounded-2xl border p-5">
+      <h3 className="text-base font-medium">Keep docs close</h3>
+      <div className="text-muted-foreground mt-2 text-sm leading-7">
+        Every component has install commands, examples, previews, and API notes
+        in the same documentation flow.
+      </div>
+    </div>
+    <div className="border-border/70 bg-card/70 rounded-2xl border p-5">
+      <h3 className="text-base font-medium">Stay native-first</h3>
+      <div className="text-muted-foreground mt-2 text-sm leading-7">
+        The primitives are designed for React Native and Expo rather than being
+        thin ports of web-only assumptions.
+      </div>
+    </div>
+  </div>
+</DocSection>
+
+## Typical workflow
+
+<DocSection>
+  ### Pick components
+
+  <DocSubsection>
+    <div className="text-muted-foreground text-sm leading-7">
+      Browse the registry, open the docs for a primitive, and verify that its
+      API and visual behavior match the surface you are building.
+    </div>
+  </DocSubsection>
+
+  ### Install with CLI
+
+  <DocSubsection>
+    <div className="text-muted-foreground text-sm leading-7">
+      Initialize your project once, then add primitives whenever you need them.
+    </div>
+    <CodeBlock language="bash" title="CLI workflow" showLineNumbers={false}>
+      {`watermelon init
+watermelon add button text`}
+    </CodeBlock>
+  </DocSubsection>
+
+  ### Customize output
+
+  <DocSubsection>
+    <div className="text-muted-foreground text-sm leading-7">
+      After installation, the files are yours. Adjust variants, spacing,
+      tokens, or composition patterns to fit your product instead of waiting on
+      a package release.
+    </div>
+  </DocSubsection>
+</DocSection>
+
+## Project shape
+
+<DocSection>
+  <div className="text-muted-foreground text-sm leading-7">
+    A typical setup keeps UI primitives in a local component directory, uses a
+    shared utility helper, and points Tailwind or NativeWind to the right
+    sources.
+  </div>
+  <CodeBlock language="text" title="Example structure" showLineNumbers={false}>
+    {`app/
+components/
+  ui/
+    button.tsx
+    text.tsx
+lib/
+  utils.ts
+global.css
+watermelon.json`}
+  </CodeBlock>
+</DocSection>
+
+## Next steps
+
+<DocSection>
+  <div className="text-muted-foreground text-sm leading-7">
+    Start with the installation guide if you are setting up a fresh app, or
+    jump into the components catalog if you already want to pull in a primitive
+    and begin customizing it.
+  </div>
+</DocSection>

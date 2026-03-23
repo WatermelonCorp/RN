@@ -1,322 +1,251 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { ArrowUp01Icon, Menu01Icon } from "@hugeicons/core-free-icons";
+import { motion } from "motion/react";
+import type { TOCItemType } from "fumadocs-core/toc";
+import { TOCItem as FumaTOCItem } from "fumadocs-core/toc";
+import {
+  TOCProvider as FumaTOCProvider,
+  TOCScrollArea,
+  useActiveAnchor,
+  useActiveAnchors,
+  useTOCItems,
+} from "fumadocs-ui/components/toc";
 import { cn } from "@/lib/utils";
 import { useTOC } from "./toc-context";
-import type { TocItem } from "./toc-context";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
-type ItemPosition = {
-  top: number;
-  depth: number;
-};
-
-type ActivePosition = {
-  x: number;
-  y: number;
-};
-
-function getX(depth?: number) {
-  const level = depth === 3 ? 1 : 0;
-  return level * 16 + 4;
+function getPadding(depth: number, compact: boolean) {
+  if (depth <= 2) return compact ? 14 : 16;
+  if (depth === 3) return compact ? 28 : 32;
+  return compact ? 40 : 44;
 }
 
-function getScrollContainer(element?: HTMLElement | null) {
-  return (
-    element?.closest('[data-slot="sidebar-inset"]') ??
-    document.querySelector<HTMLElement>('[data-slot="sidebar-inset"]')
-  );
+function getPathX(depth: number, compact: boolean) {
+  return getPadding(depth, compact) - (compact ? 6 : 8);
 }
 
-function DocsTOCNav({
-  items,
-  activeId,
-  itemPositions,
-  activePos,
-  containerRef,
+function createPath(
+  items: TOCItemType[],
+  positions: Record<string, { x: number; y: number }>,
+) {
+  if (items.length === 0) return "";
+
+  let path = "";
+
+  items.forEach((item, index) => {
+    const id = item.url.replace(/^#/, "");
+    const current = positions[id];
+    if (!current) return;
+
+    if (index === 0) {
+      path += `M ${current.x} ${current.y}`;
+      return;
+    }
+
+    const previousId = items[index - 1]?.url.replace(/^#/, "");
+    const previous = previousId ? positions[previousId] : null;
+    if (!previous) return;
+
+    if (previous.x === current.x) {
+      path += ` L ${current.x} ${current.y}`;
+      return;
+    }
+
+    const midY = previous.y + (current.y - previous.y) / 2;
+    path += ` L ${previous.x} ${midY}`;
+    path += ` Q ${previous.x} ${midY} ${current.x} ${midY + 8}`;
+    path += ` L ${current.x} ${current.y}`;
+  });
+
+  return path;
+}
+
+function DocsTOCItems({
   compact = false,
   onItemSelect,
 }: {
-  items: TocItem[];
-  activeId: string | null;
-  itemPositions: Record<string, ItemPosition>;
-  activePos: ActivePosition | null;
-  containerRef: React.RefObject<HTMLDivElement | null>;
   compact?: boolean;
   onItemSelect?: () => void;
 }) {
-  const svgPath = useMemo(() => {
-    if (items.length < 2) return "";
+  const items = useTOCItems();
+  const activeAnchors = useActiveAnchors();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [positions, setPositions] = useState<Record<string, { x: number; y: number }>>({});
 
-    let path = "";
+  useEffect(() => {
+    const updatePositions = () => {
+      const container = containerRef.current;
+      if (!container) return;
 
-    items.forEach((item, index) => {
-      const pos = itemPositions[item.id];
-      if (!pos) return;
+      const nextPositions: Record<string, { x: number; y: number }> = {};
 
-      const x = getX(item.depth);
-      const y = pos.top + 0.5;
+      items.forEach((item) => {
+        const id = item.url.replace(/^#/, "");
+        const anchor = container.querySelector<HTMLAnchorElement>(
+          `a[href="${item.url}"]`,
+        );
 
-      if (index === 0) {
-        path += `M ${x} ${y}`;
-        return;
-      }
+        if (!anchor) return;
 
-      const prev = items[index - 1];
-      const prevPos = itemPositions[prev.id];
-      if (!prevPos) return;
+        nextPositions[id] = {
+          x: getPathX(item.depth, compact),
+          y: anchor.offsetTop + anchor.offsetHeight / 2,
+        };
+      });
 
-      const prevX = getX(prev.depth);
-      const prevY = prevPos.top + 0.5;
+      setPositions(nextPositions);
+    };
 
-      if (x === prevX) {
-        path += ` L ${x} ${y}`;
-        return;
-      }
+    updatePositions();
 
-      const midY = prevY + (y - prevY) / 2;
-      path += ` L ${prevX} ${midY - 4} L ${x} ${midY + 4} L ${x} ${y}`;
-    });
+    const resizeObserver = new ResizeObserver(updatePositions);
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current);
+    }
+    window.addEventListener("resize", updatePositions);
 
-    return path;
-  }, [items, itemPositions]);
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", updatePositions);
+    };
+  }, [compact, items]);
+
+  const activeItems = useMemo(
+    () =>
+      items.filter((item) => activeAnchors.includes(item.url.replace(/^#/, ""))),
+    [activeAnchors, items],
+  );
+
+  const activePath = useMemo(
+    () => createPath(activeItems, positions),
+    [activeItems, positions],
+  );
 
   return (
-    <div className="relative overflow-visible" ref={containerRef}>
-      <svg className="pointer-events-none absolute top-0 left-0 h-full w-full">
-        <motion.path
-          d={svgPath}
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1"
-          className="text-border/40"
-          initial={false}
-          animate={{ d: svgPath }}
-          transition={{ type: "spring", stiffness: 250, damping: 30 }}
-        />
-      </svg>
-
-      <AnimatePresence>
-        {activePos ? (
-          <motion.div
-            layoutId={`toc-diamond-${compact ? "mobile" : "desktop"}`}
-            className="absolute z-10 size-1.5"
-            style={{
-              left: activePos.x - 3,
-              top: activePos.y - 3,
-              rotate: 45,
-            }}
+    <TOCScrollArea
+      className={cn(
+        "mask-none py-0 pr-2",
+        compact ? "max-h-[40svh]" : "max-h-[calc(100svh-7rem)]",
+      )}
+    >
+      <div className="relative">
+        <svg className="pointer-events-none absolute inset-0 h-full w-full overflow-visible">
+          <motion.path
+            d={activePath}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="text-primary"
             initial={false}
-            animate={{ opacity: 1 }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          >
-            <div className="bg-foreground size-full shadow-sm" />
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
-
-      <nav className={cn("flex flex-col pr-4", compact ? "gap-1" : "gap-1.5")}>
-        {items.map((item) => {
-          const isActive = activeId === item.id;
-          const xOffset = getX(item.depth) - 4 + 16;
-
-          return (
-            <a
-              key={item.id}
-              href={`#${item.id}`}
-              data-toc-id={item.id}
-              data-depth={item.depth ?? 1}
-              onClick={(event) => {
-                event.preventDefault();
-                const element = document.getElementById(item.id);
-                if (!element) return;
-
-                const scrollToTarget = () => {
-                  element.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start",
-                    inline: "nearest",
-                  });
-                };
-
-                if (compact && onItemSelect) {
-                  onItemSelect();
-                  requestAnimationFrame(() => {
-                    requestAnimationFrame(scrollToTarget);
-                  });
-                } else {
-                  scrollToTarget();
-                }
-              }}
+            animate={{ d: activePath }}
+            transition={{
+              duration: 0.42,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+          />
+        </svg>
+        <div
+          ref={containerRef}
+          className={cn(
+            "flex flex-col",
+            compact ? "gap-1" : "gap-1.5",
+          )}
+        >
+          {items.map((item) => (
+            <FumaTOCItem
+              key={item.url}
+              href={item.url}
+              onClick={() => onItemSelect?.()}
               className={cn(
-                "relative block transition-all duration-200",
-                compact ? "py-1 text-sm" : "py-1.5",
-                isActive
-                  ? "text-foreground font-semibold"
-                  : "text-muted-foreground/60 hover:text-foreground",
+                "relative block py-1 text-sm transition-colors data-[active=true]:font-semibold data-[active=true]:text-primary",
+                "text-muted-foreground/65 hover:text-foreground",
+                !compact && "py-1.5",
               )}
-              style={{ paddingLeft: `${xOffset}px` }}
+              style={{ paddingLeft: `${getPadding(item.depth, compact)}px` }}
             >
               {item.title}
-            </a>
-          );
-        })}
-      </nav>
-    </div>
+            </FumaTOCItem>
+          ))}
+        </div>
+      </div>
+    </TOCScrollArea>
   );
 }
 
 export function DocsTOC({ mobile = false }: { mobile?: boolean }) {
-  const { items, activeId, setActiveId } = useTOC();
-  const observer = useRef<IntersectionObserver | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const [itemPositions, setItemPositions] = useState<
-    Record<string, ItemPosition>
-  >({});
-  const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    const headings = items
-      .map((item) => document.getElementById(item.id))
-      .filter(Boolean) as HTMLElement[];
-    const scrollContainer = getScrollContainer(headings[0]);
-
-    if (observer.current) observer.current.disconnect();
-
-    observer.current = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort(
-            (left, right) =>
-              left.boundingClientRect.top - right.boundingClientRect.top,
-          );
-
-        if (visible.length > 0) {
-          setActiveId(visible[0].target.id);
-        }
-      },
-      {
-        root: scrollContainer,
-        rootMargin: "-80px 0px -60% 0px",
-        threshold: [0, 1],
-      },
-    );
-
-    headings.forEach((heading) => observer.current?.observe(heading));
-
-    return () => observer.current?.disconnect();
-  }, [items, setActiveId]);
-
-  useEffect(() => {
-    const scrollContainer = getScrollContainer(containerRef.current);
-
-    const update = () => {
-      if (!containerRef.current) return;
-
-      const positions: Record<string, ItemPosition> = {};
-      const links = containerRef.current.querySelectorAll("a[data-toc-id]");
-
-      links.forEach((link) => {
-        const id = link.getAttribute("data-toc-id");
-        if (!id) return;
-
-        const depth = Number.parseInt(
-          link.getAttribute("data-depth") || "1",
-          10,
-        );
-        const rect = link.getBoundingClientRect();
-        const containerRect = containerRef.current!.getBoundingClientRect();
-
-        positions[id] = {
-          top: rect.top - containerRect.top + rect.height / 2,
-          depth,
-        };
-      });
-
-      setItemPositions(positions);
-    };
-
-    update();
-    scrollContainer?.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-
-    return () => {
-      scrollContainer?.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
-    };
-  }, [items]);
-
-  const activePos = useMemo<ActivePosition | null>(() => {
-    if (!activeId || !itemPositions[activeId]) return null;
-    const pos = itemPositions[activeId];
-
-    return {
-      x: getX(pos.depth),
-      y: pos.top,
-    };
-  }, [activeId, itemPositions]);
+  const { items } = useTOC();
 
   if (items.length === 0) return null;
 
-  if (mobile) {
-    const activeItem = items.find((item) => item.id === activeId) ?? items[0];
+  return (
+    <FumaTOCProvider toc={items}>
+      <DocsTOCInner mobile={mobile} />
+    </FumaTOCProvider>
+  );
+}
 
-    return (
-      <Collapsible
-        open={open}
-        onOpenChange={setOpen}
-        className="bg-background/92 supports-backdrop-filter:bg-background/84 backdrop-blur"
-      >
-        <CollapsibleTrigger className="flex w-full items-center justify-between gap-3 px-2 py-1 text-left">
-          <div className="flex min-w-0 items-center gap-3">
-            <HugeiconsIcon
-              icon={Menu01Icon}
-              size={16}
-              strokeWidth={2.2}
-              className="text-muted-foreground"
-            />
-            <div className="min-w-0">
-              <p className="truncate text-sm font-medium">
-                {activeItem?.title}
-              </p>
-              <p className="text-muted-foreground text-[8px] tracking-[0.18em] uppercase">
-                On this page
-              </p>
-            </div>
-          </div>
+function MobileTOC({ activeItem }: { activeItem: TOCItemType }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Collapsible
+      open={open}
+      onOpenChange={setOpen}
+      className="bg-background/92 supports-backdrop-filter:bg-background/84 backdrop-blur"
+    >
+      <CollapsibleTrigger className="flex w-full items-center justify-between gap-3 px-2 py-1 text-left">
+        <div className="flex min-w-0 items-center gap-3">
           <HugeiconsIcon
-            icon={ArrowUp01Icon}
-            className={cn(
-              "text-muted-foreground transition-transform duration-200",
-              !open && "rotate-180",
-            )}
+            icon={Menu01Icon}
+            size={16}
+            strokeWidth={2.2}
+            className="text-muted-foreground"
           />
-        </CollapsibleTrigger>
-
-        <CollapsibleContent className="border-border/60 overflow-hidden border-t px-4 pb-4">
-          <div className="pt-3">
-            <DocsTOCNav
-              items={items}
-              activeId={activeId}
-              itemPositions={itemPositions}
-              activePos={activePos}
-              containerRef={containerRef}
-              compact
-              onItemSelect={() => setOpen(false)}
-            />
+          <div className="min-w-0">
+            <p className="truncate text-sm font-medium">{activeItem.title}</p>
+            <p className="text-muted-foreground text-[8px] tracking-[0.18em] uppercase">
+              On this page
+            </p>
           </div>
-        </CollapsibleContent>
-      </Collapsible>
-    );
+        </div>
+        <HugeiconsIcon
+          icon={ArrowUp01Icon}
+          className={cn(
+            "text-muted-foreground transition-transform duration-200",
+            !open && "rotate-180",
+          )}
+        />
+      </CollapsibleTrigger>
+
+      <CollapsibleContent className="border-border/60 overflow-hidden border-t px-4 pb-4">
+        <div className="pt-3">
+          <DocsTOCItems compact onItemSelect={() => setOpen(false)} />
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
+  );
+}
+
+function DocsTOCInner({ mobile = false }: { mobile?: boolean }) {
+  const items = useTOCItems();
+  const activeId = useActiveAnchor();
+
+  if (items.length === 0) return null;
+
+  const activeItem =
+    items.find((item) => item.url === `#${activeId}`) ?? items[0];
+
+  if (mobile) {
+    return <MobileTOC activeItem={activeItem} />;
   }
 
   return (
@@ -327,13 +256,7 @@ export function DocsTOC({ mobile = false }: { mobile?: boolean }) {
           On this page
         </span>
       </div>
-      <DocsTOCNav
-        items={items}
-        activeId={activeId}
-        itemPositions={itemPositions}
-        activePos={activePos}
-        containerRef={containerRef}
-      />
+      <DocsTOCItems />
     </div>
   );
 }

@@ -4,19 +4,55 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { Navbar } from "@/components/core/navbar";
 import { TOCProvider } from "@/components/core/toc-context";
 import { DocsTOC } from "@/components/core/docs-toc";
+import {
+  getCommandLinks,
+  getComponentGroups,
+  getGuideLinks,
+} from "@/lib/docs-navigation";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  BookOpen02Icon,
+  ComputerTerminalIcon,
+} from "@hugeicons/core-free-icons";
 
 export default function ComponentsLayout({
   children,
 }: {
   children: ReactNode;
 }) {
+  const guideGroups = [
+    {
+      title: "Getting Started",
+      url: "#",
+      icon: <HugeiconsIcon icon={ComputerTerminalIcon} strokeWidth={2} />,
+      isActive: true,
+      items: getGuideLinks().map((item) => ({
+        title: item.title,
+        url: item.url,
+      })),
+    },
+  ];
+  const componentGroups = getComponentGroups().map((group) => ({
+    title: group.title,
+    url: "#",
+    icon: <HugeiconsIcon icon={BookOpen02Icon} strokeWidth={2} />,
+    items: group.items.map((item) => ({
+      title: item.title,
+      url: item.url,
+    })),
+  }));
+  const commandLinks = getCommandLinks();
+
   return (
     <TOCProvider>
       <SidebarProvider>
-        <AppSidebar />
+        <AppSidebar
+          guideGroups={guideGroups}
+          componentGroups={componentGroups}
+        />
         <SidebarInset className="relative flex h-[calc(100dvh-1.5rem)] flex-col overflow-y-auto bg-[linear-gradient(180deg,rgba(255,255,255,0.99),rgba(255,255,255,0.95))] dark:bg-[linear-gradient(180deg,rgba(24,24,27,0.98),rgba(24,24,27,0.94))]">
           <main className="z-10 min-h-[calc(100vh-4rem)] w-full min-w-0 overflow-x-hidden 2xl:overflow-visible">
-            <Navbar />
+            <Navbar commandLinks={commandLinks} />
             <div className="mx-auto w-full max-w-6xl px-3 py-8 sm:px-4 lg:px-8 lg:py-10 xl:max-w-6xl 2xl:pr-72">
               <div className="sticky top-14 z-10 -mx-3 mb-6 xl:hidden">
                 <DocsTOC mobile />

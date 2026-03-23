@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "next-themes";
+import { NextProvider } from "fumadocs-core/framework/next";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -46,11 +47,13 @@ export default function RootLayout({
           disableTransitionOnChange
           enableSystem
         >
-          <TooltipProvider>
-            <div className="min-h-[calc(100vh-var(--header-height,56px))]">
-              {children}
-            </div>
-          </TooltipProvider>
+          <NextProvider>
+            <TooltipProvider>
+              <div className="min-h-[calc(100vh-var(--header-height,56px))]">
+                {children}
+              </div>
+            </TooltipProvider>
+          </NextProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -33,7 +33,7 @@ export function ComponentPreview({
         )}
       >
         {/* Header with tabs and actions */}
-        <div className="flex flex-col gap-3 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-4 sm:py-2">
+        <div className="flex flex-col gap-3 px-2 py-2 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex min-w-0 flex-wrap items-center gap-1">
             {/* Preview Tab */}
             <button
@@ -71,7 +71,7 @@ export function ComponentPreview({
         <div className="relative">
           {/* Preview Panel */}
           {activeTab === "preview" && (
-            <div className="from-muted/50 flex min-h-[280px] w-full min-w-0 items-center justify-center bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] via-transparent to-transparent p-3 sm:p-6">
+            <div className="from-muted/50 flex min-h-[280px] w-full min-w-0 items-center justify-center">
               <div className="relative w-full min-w-0">
                 <React.Suspense
                   fallback={
@@ -82,7 +82,7 @@ export function ComponentPreview({
                   }
                 >
                   {video ? (
-                    <div className="border-border/70 bg-card/90 mx-auto w-full max-w-full overflow-hidden rounded-xl border shadow-sm sm:max-w-4xl">
+                    <div className="border-border/70 bg-card/90 mx-auto w-full max-w-full overflow-hidden rounded-b-xl border shadow-sm sm:max-w-4xl">
                       <video
                         src={video}
                         poster={poster}
@@ -90,7 +90,6 @@ export function ComponentPreview({
                         muted
                         loop
                         playsInline
-                        controls
                         className="max-h-[560px] w-full bg-black object-contain"
                       />
                     </div>
@@ -105,7 +104,9 @@ export function ComponentPreview({
           {/* Code Panel */}
           {activeTab === "code" && code && (
             <div className="max-h-[400px] w-full min-w-0 overflow-auto">
-              <CodeBlock showLineNumbers={true}>{code}</CodeBlock>
+              <CodeBlock showLineNumbers={true} className="rounded-none">
+                {code}
+              </CodeBlock>
             </div>
           )}
         </div>

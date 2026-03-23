@@ -1,0 +1,141 @@
+---
+title: Button
+description: A cross-platform pressable with size and variant APIs for primary actions, secondary actions, and icon-only controls.
+kind: component
+category: Buttons
+image: /logo.png
+video: /previews/button-preview.mp4
+featured: true
+featuredOrder: 0
+componentNumber: 1
+dependencies:
+  - "@rn-primitives/slot"
+  - class-variance-authority
+  - lucide-react-native
+  - react-native-svg
+install:
+  - watermelon add button
+qrValue: showcase://components/button
+appStoreHref: https://apps.apple.com/app/expo-go/id982107779
+playStoreHref: https://play.google.com/store/apps/details?id=host.exp.exponent
+sourceHref: https://github.com/vanshpatelx/RN/blob/main/packages/registry/src/components/ui/button.tsx
+registryHref: https://github.com/vanshpatelx/RN/blob/main/packages/registry/registry.json
+---
+
+import { CodeBlock } from "@/components/showcase/code-block";
+import {
+  ApiTable,
+  DocSection,
+  DocSubsection,
+} from "@/components/showcase/docs-primitives";
+
+## Import
+
+<DocSection>
+  <CodeBlock language="tsx" title="Import" showLineNumbers={false}>
+    {`import { Button } from "@/components/ui/button";
+import { Text } from "@/components/ui/text";`}
+  </CodeBlock>
+</DocSection>
+
+## Usage
+
+<DocSection>
+  <div>
+    The <code>Button</code> component wraps a React Native <code>Pressable</code>{" "}
+    and shares text styling through the registry <code>Text</code> primitive.
+  </div>
+
+  ### Basic Usage
+
+  <DocSubsection>
+    <div>Use the default button for primary actions.</div>
+    <CodeBlock language="tsx" title="Basic Usage">
+      {`<Button>
+  <Text>Continue</Text>
+</Button>`}
+    </CodeBlock>
+  </DocSubsection>
+
+  ### Variants
+
+  <DocSubsection>
+    <div>
+      Choose from <code>default</code>, <code>secondary</code>,{" "}
+      <code>outline</code>, <code>ghost</code>, <code>destructive</code>, and{" "}
+      <code>link</code>.
+    </div>
+    <CodeBlock language="tsx" title="Variants">
+      {`<Button variant="default"><Text>Primary</Text></Button>
+<Button variant="secondary"><Text>Secondary</Text></Button>
+<Button variant="outline"><Text>Outline</Text></Button>
+<Button variant="ghost"><Text>Ghost</Text></Button>
+<Button variant="destructive"><Text>Delete</Text></Button>`}
+    </CodeBlock>
+  </DocSubsection>
+
+  ### Sizes
+
+  <DocSubsection>
+    <div>
+      Match the control to the surface with <code>sm</code>,{" "}
+      <code>default</code>, <code>lg</code>, or <code>icon</code>.
+    </div>
+    <CodeBlock language="tsx" title="Sizes">
+      {`<Button size="sm"><Text>Small</Text></Button>
+<Button size="default"><Text>Default</Text></Button>
+<Button size="lg"><Text>Large</Text></Button>`}
+    </CodeBlock>
+  </DocSubsection>
+
+  ### With Text
+
+  <DocSubsection>
+    <div>
+      Because the registry shares class names with the nested <code>Text</code>{" "}
+      element, icon and label compositions stay visually consistent.
+    </div>
+    <CodeBlock language="tsx" title="Composed Button">
+      {`<Button variant="outline" size="lg">
+  <Text>Open Preview</Text>
+</Button>`}
+    </CodeBlock>
+  </DocSubsection>
+</DocSection>
+
+## API Reference
+
+<DocSection>
+  <div>
+    <code>Button</code> extends all supported props from React Native{" "}
+    <code>Pressable</code> and adds design-system variants.
+  </div>
+  <ApiTable
+    rows={[
+      {
+        prop: "variant",
+        type: `"default" | "destructive" | "outline" | "secondary" | "ghost" | "link"`,
+        default: `"default"`,
+        description: "Controls the visual style of the button.",
+      },
+      {
+        prop: "size",
+        type: `"default" | "sm" | "lg" | "icon"`,
+        default: `"default"`,
+        description: "Controls button height, padding, and icon sizing.",
+      },
+      {
+        prop: "disabled",
+        type: "boolean",
+        default: "false",
+        description: "Disables interactions and lowers opacity.",
+      },
+      {
+        prop: "className",
+        type: "string",
+        default: "-",
+        description: "Extends the NativeWind classes applied to the control.",
+      },
+    ]}
+  />
+</DocSection>

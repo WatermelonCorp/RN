@@ -1,0 +1,186 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import type { TOCItemType } from "fumadocs-core/toc";
+import { DocsBody, DocsDescription, DocsTitle } from "fumadocs-ui/page";
+import MotionDiv from "@/components/core/motion-div";
+import { PageHeader } from "@/components/core/typography";
+import { Button } from "@/components/ui/button";
+import { DocsPager, OnThisPage, PreviewCard } from "@/components/showcase/docs-primitives";
+import { ComponentPreview } from "@/components/mdx/component-preview";
+import { ComponentInstallation } from "@/components/showcase/component-installation";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  getComponentLinks,
+  getComponentPager,
+} from "@/lib/docs-navigation";
+import { docsSource } from "@/lib/docs-source";
+import { getRegistryCatalog } from "@/lib/registry-catalog";
+
+type DocsPageParams = {
+  slug: string[];
+};
+
+export function generateStaticParams() {
+  return docsSource.generateParams();
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<DocsPageParams>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const page = docsSource.getPage(slug);
+
+  if (!page) return {};
+
+  return {
+    title: `${page.data.title} | Watermelon RN`,
+    description: page.data.description,
+  };
+}
+
+export default async function DocsPage({
+  params,
+}: {
+  params: Promise<DocsPageParams>;
+}) {
+  const { slug } = await params;
+  const page = docsSource.getPage(slug);
+
+  if (!page) {
+    notFound();
+  }
+
+  const Content = page.data.body;
+  const toc = (page.data.toc ?? []) as TOCItemType[];
+  const isComponentPage = page.data.kind === "component";
+
+  if (!isComponentPage) {
+    return (
+      <MotionDiv
+        initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
+        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+        exit={{ opacity: 0, y: -20, filter: "blur(10px)" }}
+        transition={{ duration: 0.3 }}
+        className="mr-auto max-w-5xl space-y-8"
+      >
+        <OnThisPage items={toc} />
+
+        <PageHeader
+          badge={page.data.badge ?? page.data.title}
+          title={page.data.title}
+          subTitle={page.data.description ?? ""}
+        />
+
+        <DocsBody className="min-w-0 space-y-8">
+          <Content />
+        </DocsBody>
+      </MotionDiv>
+    );
+  }
+
+  const componentSlug = page.slugs.at(-1);
+  const catalog = await getRegistryCatalog();
+  const componentDocs = getComponentLinks();
+  const component = catalog
+    .flatMap((category) => category.items)
+    .find((item) => item.slug === componentSlug);
+  const componentDoc = componentDocs.find((item) => item.slug === componentSlug);
+
+  if (!component || !componentSlug || !componentDoc) {
+    notFound();
+  }
+
+  const pager = getComponentPager(componentSlug);
+
+  return (
+    <MotionDiv
+      initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
+      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      exit={{ opacity: 0, y: -20, filter: "blur(10px)" }}
+      transition={{ duration: 0.3 }}
+      className="grid min-w-0 gap-10"
+    >
+      <OnThisPage items={toc} />
+      <div className="min-w-0 space-y-6">
+        <section className="min-w-0 space-y-2">
+          <p className="text-muted-foreground w-fit rounded-md border bg-black/10 px-2 py-1 text-xs font-medium uppercase backdrop-blur-lg dark:bg-white/5">
+            {page.data.category}
+          </p>
+          <DocsTitle className="text-3xl leading-tight font-(--font-display) sm:text-4xl">
+            {page.data.title}
+          </DocsTitle>
+          <DocsDescription className="max-w-3xl text-base leading-7 sm:leading-8">
+            {page.data.description}
+          </DocsDescription>
+          <div className="flex flex-wrap gap-3">
+            {page.data.sourceHref ? (
+              <Button asChild variant="outline" size="sm">
+                <Link href={page.data.sourceHref} target="_blank">
+                  Source
+                </Link>
+              </Button>
+            ) : null}
+            {page.data.registryHref ? (
+              <Button asChild variant="outline" size="sm">
+                <Link href={page.data.registryHref} target="_blank">
+                  Registry
+                </Link>
+              </Button>
+            ) : null}
+          </div>
+        </section>
+
+        <section className="mb-6 min-w-0 space-y-4">
+          {page.data.qrValue &&
+          page.data.appStoreHref &&
+          page.data.playStoreHref ? (
+            <div className="flex justify-start sm:justify-end">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    Scan to preview
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent>
+                  <PreviewCard
+                    qrValue={page.data.qrValue}
+                    appStoreHref={page.data.appStoreHref}
+                    playStoreHref={page.data.playStoreHref}
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+          ) : null}
+          <ComponentPreview
+            code={component.source}
+            video={page.data.video}
+            poster={page.data.image}
+          />
+        </section>
+
+        <ComponentInstallation
+          item={{
+            slug: component.slug,
+            name: componentDoc.title,
+            category: componentDoc.category,
+            install: page.data.install ?? [`watermelon add ${component.slug}`],
+          }}
+          dependencies={page.data.dependencies ?? component.dependencies}
+        />
+
+        <DocsBody className="mb-10 min-w-0 space-y-8 px-0 py-2 sm:space-y-10 sm:px-4">
+          <Content />
+        </DocsBody>
+
+        <DocsPager previous={pager.previous} next={pager.next} />
+      </div>
+    </MotionDiv>
+  );
+}

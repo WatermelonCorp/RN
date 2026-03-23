@@ -10,6 +10,7 @@ import ThemeToggle from "./theme-toggle";
 import { ProgressiveBlur } from "../ui/progressive-blur";
 import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
+import type { CommandLink } from "@/lib/docs-navigation";
 
 const navLinks = [
   { label: "Components", href: "/components" },
@@ -20,7 +21,14 @@ const navLinks = [
 
 // ─── Navbar ──────────────────────────────────────────────────────────────────
 
-export function Navbar() {
+export function Navbar({
+  commandLinks,
+}: {
+  commandLinks: {
+    guides: CommandLink[];
+    components: CommandLink[];
+  };
+}) {
   const pathname = usePathname();
   const { state } = useSidebar();
   const isOpen = state === "expanded";
@@ -73,7 +81,7 @@ export function Navbar() {
         </div>
 
         <div className="flex min-w-0 flex-1 items-center justify-center px-2">
-          <CommandMenu />
+          <CommandMenu links={commandLinks} />
         </div>
 
         <div className="flex shrink-0 items-center gap-2">

@@ -1,4 +1,4 @@
-import { COMPONENT_DOC_META } from "@/lib/component-index";
+import { getComponentLinks } from "@/lib/docs-navigation";
 import registryData from "./registry-data.json";
 
 export type ShowcaseComponent = {
@@ -11,8 +11,6 @@ export type ShowcaseComponent = {
   installCommand: string;
   sourcePath: string;
   source: string;
-  usage: string;
-  preview: "button" | "text";
 };
 
 export type ShowcaseCategory = {
@@ -26,28 +24,26 @@ function titleCase(value: string) {
 }
 
 export async function getRegistryCatalog(): Promise<ShowcaseCategory[]> {
+  const docsMeta = new Map(
+    getComponentLinks().map((item) => [item.slug, item] as const),
+  );
+
   const items = registryData.map((component) => {
     const slug = component.slug;
-    const preset = COMPONENT_DOC_META[slug] ?? {
-      title: titleCase(component.name),
-      description: "Reusable React Native component from the Watermelon registry.",
-      category: "Components",
-      usage: `watermelon add ${slug}`,
-      preview: "button" as const,
-    };
+    const preset = docsMeta.get(slug);
 
     return {
       slug,
-      title: preset.title,
-      description: preset.description,
-      category: preset.category,
+      title: preset?.title ?? titleCase(component.name),
+      description:
+        preset?.description ??
+        "Reusable React Native component from the Watermelon registry.",
+      category: preset?.category ?? "Components",
       dependencies: component.dependencies ?? [],
       registryDependencies: component.registryDependencies ?? [],
       installCommand: `watermelon add ${slug}`,
       sourcePath: component.sourcePath,
       source: component.source,
-      usage: preset.usage,
-      preview: preset.preview,
     } satisfies ShowcaseComponent;
   });
 
