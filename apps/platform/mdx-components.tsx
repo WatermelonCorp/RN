@@ -8,12 +8,11 @@ type MDXComponentProps = {
 
 type MDXComponents = Record<string, ComponentType<MDXComponentProps>>;
 
-export function useMDXComponents(components: MDXComponents): MDXComponents {
-  return {
+export const customMDXComponents: MDXComponents = {
     h1: ({ className, ...props }) => (
       <h1
         className={cn(
-          "text-3xl font-[family:var(--font-display)] font-semibold",
+          "scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl font-[family:var(--font-display)]",
           className,
         )}
         {...props}
@@ -21,19 +20,28 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     ),
     h2: ({ className, ...props }) => (
       <h2
-        className={cn("mt-10 text-2xl font-medium tracking-tight", className)}
+        className={cn(
+          "scroll-m-20 border-border border-b pb-2 mt-10 text-3xl font-semibold tracking-tight first:mt-0 font-[family:var(--font-display)]",
+          className,
+        )}
         {...props}
       />
     ),
     h3: ({ className, ...props }) => (
       <h3
-        className={cn("mt-8 text-xl font-medium tracking-tight", className)}
+        className={cn(
+          "scroll-m-20 mt-8 text-2xl font-semibold tracking-tight font-[family:var(--font-display)]",
+          className,
+        )}
         {...props}
       />
     ),
     p: ({ className, ...props }) => (
-      <div
-        className={cn("text-muted-foreground text-sm", className)}
+      <p
+        className={cn(
+          "leading-7 text-muted-foreground not-first:mt-6",
+          className,
+        )}
         {...props}
       />
     ),
@@ -82,6 +90,11 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         {...props}
       />
     ),
+};
+
+export function useMDXComponents(components: MDXComponents): MDXComponents {
+  return {
+    ...customMDXComponents,
     ...components,
   };
 }

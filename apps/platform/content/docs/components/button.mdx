@@ -28,6 +28,7 @@ import {
   DocSection,
   DocSubsection,
 } from "@/components/showcase/docs-primitives";
+import { CompPreview } from "@/components/mdx/component-preview";
 
 ## Import
 
@@ -41,75 +42,67 @@ import { Text } from "@/components/ui/text";`}
 ## Usage
 
 <DocSection>
-  <div>
+  <p>
     The <code>Button</code> component wraps a React Native <code>Pressable</code>{" "}
     and shares text styling through the registry <code>Text</code> primitive.
-  </div>
+  </p>
 
   ### Basic Usage
 
   <DocSubsection>
-    <div>Use the default button for primary actions.</div>
-    <CodeBlock language="tsx" title="Basic Usage">
-      {`<Button>
+    <p>Use the default button for primary actions.</p>
+    <CompPreview video="/previews/button-preview.mp4" code={`<Button>
   <Text>Continue</Text>
-</Button>`}
-    </CodeBlock>
+</Button>`} />
   </DocSubsection>
 
   ### Variants
 
   <DocSubsection>
-    <div>
+    <p>
       Choose from <code>default</code>, <code>secondary</code>,{" "}
       <code>outline</code>, <code>ghost</code>, <code>destructive</code>, and{" "}
       <code>link</code>.
-    </div>
-    <CodeBlock language="tsx" title="Variants">
-      {`<Button variant="default"><Text>Primary</Text></Button>
+    </p>
+    <CompPreview video="/previews/button-preview.mp4" code={`<Button variant="default"><Text>Primary</Text></Button>
 <Button variant="secondary"><Text>Secondary</Text></Button>
 <Button variant="outline"><Text>Outline</Text></Button>
 <Button variant="ghost"><Text>Ghost</Text></Button>
-<Button variant="destructive"><Text>Delete</Text></Button>`}
-    </CodeBlock>
+<Button variant="destructive"><Text>Delete</Text></Button>`} />
   </DocSubsection>
 
   ### Sizes
 
   <DocSubsection>
-    <div>
+    <p>
       Match the control to the surface with <code>sm</code>,{" "}
       <code>default</code>, <code>lg</code>, or <code>icon</code>.
-    </div>
-    <CodeBlock language="tsx" title="Sizes">
-      {`<Button size="sm"><Text>Small</Text></Button>
+    </p>
+    <CompPreview video="/previews/button-preview.mp4" code={`<Button size="sm"><Text>Small</Text></Button>
 <Button size="default"><Text>Default</Text></Button>
-<Button size="lg"><Text>Large</Text></Button>`}
-    </CodeBlock>
+<Button size="lg"><Text>Large</Text></Button>`} />
   </DocSubsection>
 
   ### With Text
 
   <DocSubsection>
-    <div>
+    <p>
       Because the registry shares class names with the nested <code>Text</code>{" "}
       element, icon and label compositions stay visually consistent.
-    </div>
-    <CodeBlock language="tsx" title="Composed Button">
-      {`<Button variant="outline" size="lg">
+    </p>
+    <CompPreview video="/previews/button-preview.mp4" code={`<Button variant="outline" size="lg">
   <Text>Open Preview</Text>
-</Button>`}
-    </CodeBlock>
+</Button>`} />
   </DocSubsection>
 </DocSection>
 
 ## API Reference
 
 <DocSection>
-  <div>
+  <p>
     <code>Button</code> extends all supported props from React Native{" "}
     <code>Pressable</code> and adds design-system variants.
-  </div>
+  </p>
   <ApiTable
     rows={[
       {

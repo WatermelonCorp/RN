@@ -78,7 +78,7 @@ export function ComponentInstallation({
   return (
     <section className="space-y-6">
       <div className="space-y-2">
-        <h2 className="text-xl font-medium tracking-tight">Installation</h2>
+        <h2 id="installation" className="scroll-m-20 text-xl font-medium tracking-tight">Installation</h2>
         <p className="text-muted-foreground text-sm leading-7">
           Install the registry item directly, then add any package dependencies
           if you are setting the component up manually.

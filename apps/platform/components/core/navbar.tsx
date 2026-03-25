@@ -46,13 +46,13 @@ export function Navbar({
 
       {/* Navbar content */}
       <nav className="border-border/70 relative z-10 container mx-auto flex h-14 items-center justify-between gap-2 px-4">
-        <div className="flex min-w-0 shrink-0 items-center gap-3">
+        <div className="flex min-w-0 shrink-0 items-center">
           <div
             className={cn(
-              "flex items-center gap-2 transition-all duration-300 ease-in-out",
+              "flex items-center gap-2 transition-all duration-300 ease-in-out overflow-hidden whitespace-nowrap",
               !isOpen || isMobile
-                ? "translate-x-0 scale-100 opacity-100"
-                : "-translate-x-100 scale-50 opacity-0",
+                ? "w-auto translate-x-0 opacity-100 mr-3"
+                : "w-0 -translate-x-full opacity-0 pointer-events-none mr-0",
             )}
           >
             <SidebarTrigger />
@@ -80,12 +80,13 @@ export function Navbar({
           </nav>
         </div>
 
-        <div className="flex min-w-0 flex-1 items-center justify-center px-2">
-          <CommandMenu links={commandLinks} />
-        </div>
-
-        <div className="flex shrink-0 items-center gap-2">
-          <ThemeToggle className="size-9" />
+        <div className="flex flex-1 items-center justify-end space-x-2 px-2">
+          <div className="w-full flex-1 sm:max-w-xs md:w-auto md:flex-none">
+            <CommandMenu links={commandLinks} />
+          </div>
+          <div className="flex shrink-0 items-center">
+            <ThemeToggle className="size-9" />
+          </div>
         </div>
       </nav>
     </header>

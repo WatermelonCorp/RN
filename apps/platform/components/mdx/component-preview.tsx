@@ -22,7 +22,8 @@ export function ComponentPreview({
   video,
   poster,
 }: ComponentPreviewProps) {
-  const [activeTab, setActiveTab] = useState<"preview" | "code">("preview");
+  const hasPreview = Boolean(video || children);
+  const [activeTab, setActiveTab] = useState<"preview" | "code">(hasPreview ? "preview" : "code");
 
   return (
     <GlassContainer>
@@ -36,18 +37,20 @@ export function ComponentPreview({
         <div className="flex flex-col gap-3 px-2 py-2 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex min-w-0 flex-wrap items-center gap-1">
             {/* Preview Tab */}
-            <button
-              onClick={() => setActiveTab("preview")}
-              className={cn(
-                "flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-all duration-200",
-                activeTab === "preview"
-                  ? "bg-background text-foreground border shadow-sm"
-                  : "text-muted-foreground hover:text-foreground hover:bg-accent",
-              )}
-            >
-              <HugeiconsIcon icon={ViewIcon} size={14} />
-              Preview
-            </button>
+            {hasPreview && (
+              <button
+                onClick={() => setActiveTab("preview")}
+                className={cn(
+                  "flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-all duration-200",
+                  activeTab === "preview"
+                    ? "bg-background text-foreground border shadow-sm"
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent",
+                )}
+              >
+                <HugeiconsIcon icon={ViewIcon} size={14} />
+                Preview
+              </button>
+            )}
 
             {/* Code Tab */}
             {code && (
