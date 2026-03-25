@@ -50,8 +50,8 @@ export default function ComponentsLayout({
           guideGroups={guideGroups}
           componentGroups={componentGroups}
         />
-        <SidebarInset className="relative flex h-[calc(100dvh-1.5rem)] flex-col overflow-y-auto bg-[linear-gradient(180deg,rgba(255,255,255,0.99),rgba(255,255,255,0.95))] dark:bg-[linear-gradient(180deg,rgba(24,24,27,0.98),rgba(24,24,27,0.94))]">
-          <main className="z-10 min-h-[calc(100vh-4rem)] w-full min-w-0 overflow-x-hidden 2xl:overflow-visible">
+        <SidebarInset className="relative flex min-h-svh flex-col bg-[linear-gradient(180deg,rgba(255,255,255,0.99),rgba(255,255,255,0.95))] dark:bg-[linear-gradient(180deg,rgba(24,24,27,0.98),rgba(24,24,27,0.94))]">
+          <main className="z-10 w-full min-w-0 flex-1">
             <Navbar commandLinks={commandLinks} />
             <div className="mx-auto w-full max-w-6xl px-3 py-8 sm:px-4 lg:px-8 lg:py-10 xl:max-w-6xl 2xl:pr-72">
               <div className="sticky top-14 z-10 -mx-3 mb-6 xl:hidden">

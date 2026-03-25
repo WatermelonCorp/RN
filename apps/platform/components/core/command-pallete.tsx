@@ -93,7 +93,7 @@ export function CommandMenu({
     <div className="flex flex-col gap-4">
       <InputGroup
         onClick={() => setOpen(true)}
-        className="bg-muted/40 hover:bg-muted/60 flex cursor-pointer items-center justify-center transition-colors md:w-48 lg:w-64"
+        className="bg-muted/40 hover:bg-muted/60 flex cursor-pointer items-center justify-center transition-colors w-full sm:w-56 md:w-64 lg:w-72"
       >
         <InputGroupAddon>
           <HugeiconsIcon

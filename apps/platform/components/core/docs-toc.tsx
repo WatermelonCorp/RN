@@ -1,17 +1,16 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { ArrowUp01Icon, Menu01Icon } from "@hugeicons/core-free-icons";
-import { motion } from "motion/react";
 import type { TOCItemType } from "fumadocs-core/toc";
 import { TOCItem as FumaTOCItem } from "fumadocs-core/toc";
 import {
   TOCProvider as FumaTOCProvider,
   TOCScrollArea,
   useActiveAnchor,
-  useActiveAnchors,
   useTOCItems,
+  TocThumb,
 } from "fumadocs-ui/components/toc";
 import { cn } from "@/lib/utils";
 import { useTOC } from "./toc-context";
@@ -27,46 +26,6 @@ function getPadding(depth: number, compact: boolean) {
   return compact ? 40 : 44;
 }
 
-function getPathX(depth: number, compact: boolean) {
-  return getPadding(depth, compact) - (compact ? 6 : 8);
-}
-
-function createPath(
-  items: TOCItemType[],
-  positions: Record<string, { x: number; y: number }>,
-) {
-  if (items.length === 0) return "";
-
-  let path = "";
-
-  items.forEach((item, index) => {
-    const id = item.url.replace(/^#/, "");
-    const current = positions[id];
-    if (!current) return;
-
-    if (index === 0) {
-      path += `M ${current.x} ${current.y}`;
-      return;
-    }
-
-    const previousId = items[index - 1]?.url.replace(/^#/, "");
-    const previous = previousId ? positions[previousId] : null;
-    if (!previous) return;
-
-    if (previous.x === current.x) {
-      path += ` L ${current.x} ${current.y}`;
-      return;
-    }
-
-    const midY = previous.y + (current.y - previous.y) / 2;
-    path += ` L ${previous.x} ${midY}`;
-    path += ` Q ${previous.x} ${midY} ${current.x} ${midY + 8}`;
-    path += ` L ${current.x} ${current.y}`;
-  });
-
-  return path;
-}
-
 function DocsTOCItems({
   compact = false,
   onItemSelect,
@@ -75,58 +34,9 @@ function DocsTOCItems({
   onItemSelect?: () => void;
 }) {
   const items = useTOCItems();
-  const activeAnchors = useActiveAnchors();
   const containerRef = useRef<HTMLDivElement>(null);
-  const [positions, setPositions] = useState<Record<string, { x: number; y: number }>>({});
 
-  useEffect(() => {
-    const updatePositions = () => {
-      const container = containerRef.current;
-      if (!container) return;
-
-      const nextPositions: Record<string, { x: number; y: number }> = {};
-
-      items.forEach((item) => {
-        const id = item.url.replace(/^#/, "");
-        const anchor = container.querySelector<HTMLAnchorElement>(
-          `a[href="${item.url}"]`,
-        );
-
-        if (!anchor) return;
-
-        nextPositions[id] = {
-          x: getPathX(item.depth, compact),
-          y: anchor.offsetTop + anchor.offsetHeight / 2,
-        };
-      });
-
-      setPositions(nextPositions);
-    };
-
-    updatePositions();
-
-    const resizeObserver = new ResizeObserver(updatePositions);
-    if (containerRef.current) {
-      resizeObserver.observe(containerRef.current);
-    }
-    window.addEventListener("resize", updatePositions);
-
-    return () => {
-      resizeObserver.disconnect();
-      window.removeEventListener("resize", updatePositions);
-    };
-  }, [compact, items]);
-
-  const activeItems = useMemo(
-    () =>
-      items.filter((item) => activeAnchors.includes(item.url.replace(/^#/, ""))),
-    [activeAnchors, items],
-  );
-
-  const activePath = useMemo(
-    () => createPath(activeItems, positions),
-    [activeItems, positions],
-  );
+  if (items.length === 0) return null;
 
   return (
     <TOCScrollArea
@@ -136,27 +46,14 @@ function DocsTOCItems({
       )}
     >
       <div className="relative">
-        <svg className="pointer-events-none absolute inset-0 h-full w-full overflow-visible">
-          <motion.path
-            d={activePath}
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="text-primary"
-            initial={false}
-            animate={{ d: activePath }}
-            transition={{
-              duration: 0.42,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-          />
-        </svg>
+        <TocThumb
+          containerRef={containerRef}
+          className="bg-primary absolute top-(--fd-top) left-0 h-(--fd-height) w-[2px] rounded-r-sm transition-all duration-300 ease-linear data-[hidden=false]:opacity-100 data-[hidden=true]:opacity-0"
+        />
         <div
           ref={containerRef}
           className={cn(
-            "flex flex-col",
+            "border-border flex flex-col border-l",
             compact ? "gap-1" : "gap-1.5",
           )}
         >
@@ -166,7 +63,7 @@ function DocsTOCItems({
               href={item.url}
               onClick={() => onItemSelect?.()}
               className={cn(
-                "relative block py-1 text-sm transition-colors data-[active=true]:font-semibold data-[active=true]:text-primary",
+                "data-[active=true]:text-primary relative block py-1 text-sm transition-colors data-[active=true]:font-semibold",
                 "text-muted-foreground/65 hover:text-foreground",
                 !compact && "py-1.5",
               )}

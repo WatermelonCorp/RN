@@ -20,6 +20,7 @@ import {
 } from "@/lib/docs-navigation";
 import { docsSource } from "@/lib/docs-source";
 import { getRegistryCatalog } from "@/lib/registry-catalog";
+import { customMDXComponents } from "@/mdx-components";
 
 type DocsPageParams = {
   slug: string[];
@@ -58,8 +59,19 @@ export default async function DocsPage({
   }
 
   const Content = page.data.body;
-  const toc = (page.data.toc ?? []) as TOCItemType[];
+  const baseToc = (page.data.toc ?? []) as TOCItemType[];
   const isComponentPage = page.data.kind === "component";
+
+  const toc = isComponentPage
+    ? [
+        {
+          title: "Installation",
+          url: "#installation",
+          depth: 2,
+        },
+        ...baseToc,
+      ]
+    : baseToc;
 
   if (!isComponentPage) {
     return (
@@ -79,7 +91,7 @@ export default async function DocsPage({
         />
 
         <DocsBody className="min-w-0 space-y-8">
-          <Content />
+          <Content components={customMDXComponents} />
         </DocsBody>
       </MotionDiv>
     );
@@ -113,7 +125,7 @@ export default async function DocsPage({
           <p className="text-muted-foreground w-fit rounded-md border bg-black/10 px-2 py-1 text-xs font-medium uppercase backdrop-blur-lg dark:bg-white/5">
             {page.data.category}
           </p>
-          <DocsTitle className="text-3xl leading-tight font-(--font-display) sm:text-4xl">
+          <DocsTitle className="text-3xl leading-tight font-[family:var(--font-display)] sm:text-4xl">
             {page.data.title}
           </DocsTitle>
           <DocsDescription className="max-w-3xl text-base leading-7 sm:leading-8">
@@ -176,7 +188,7 @@ export default async function DocsPage({
         />
 
         <DocsBody className="mb-10 min-w-0 space-y-8 px-0 py-2 sm:space-y-10 sm:px-4">
-          <Content />
+          <Content components={customMDXComponents} />
         </DocsBody>
 
         <DocsPager previous={pager.previous} next={pager.next} />
