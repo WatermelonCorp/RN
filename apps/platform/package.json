@@ -6,7 +6,7 @@
     "dev": "next dev",
     "prebuild": "node scripts/generate-registry.mjs",
     "build": "next build",
-    "build:cloudflare": "opennextjs-cloudflare build",
+    "build:cloudflare": "NEXT_PRIVATE_TURBOPACK=0 opennextjs-cloudflare build",
     "postbuild": "node scripts/ensure-pages-manifest.mjs",
     "preview": "pnpm run build:cloudflare && opennextjs-cloudflare preview",
     "deploy": "pnpm run build:cloudflare && opennextjs-cloudflare deploy",
@@ -42,7 +42,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@opennextjs/cloudflare": "^1.17.3",
+    "@opennextjs/cloudflare": "^1.18.0",
     "@tailwindcss/postcss": "^4.2.2",
     "@types/node": "^20.19.37",
     "@types/react": "19.2.14",
@@ -54,11 +54,5 @@
     "tailwindcss": "^4.2.2",
     "typescript": "^5.9.3",
     "wrangler": "^4.77.0"
-  },
-  "pnpm": {
-    "overrides": {
-      "@types/react": "19.2.14",
-      "@types/react-dom": "19.2.3"
-    }
   }
 }

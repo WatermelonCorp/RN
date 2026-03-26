@@ -51,6 +51,7 @@ copyIfPresent(buildIdSrc, buildIdDst);
   "pages-manifest.json",
   "next-font-manifest.json",
   "server-reference-manifest.json",
+  "prefetch-hints.json",
 ].forEach((file) => {
   copyIfPresent(path.join(dotNextDir, "server", file), path.join(standaloneServerDir, file));
 });

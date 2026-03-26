@@ -2,7 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "rn",
   "main": ".open-next/worker.js",
-  "compatibility_date": "2026-03-19",
+  "compatibility_date": "2024-11-01",
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "binding": "ASSETS",
