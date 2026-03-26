@@ -1,0 +1,60 @@
+---
+title: Separator
+description: A thin line used to visually separate content or group related items.
+kind: component
+category: Components
+image: /logo.png
+---
+
+import { CodeBlock } from "@/components/showcase/code-block";
+import {
+  ApiTable,
+  DocSection,
+  DocSubsection,
+} from "@/components/showcase/docs-primitives";
+import { CompPreview } from "@/components/mdx/component-preview";
+import { SeparatorInlinePreview } from "@/components/showcase/component-live-preview";
+
+## Import
+
+<DocSection>
+  <CodeBlock language="tsx" title="Import" showLineNumbers={false}>
+    {`import { Separator } from "@/components/ui/separator";`}
+  </CodeBlock>
+</DocSection>
+
+## Usage
+
+<DocSection>
+  The `Separator` is a simple horizontal or vertical line divider.
+
+### Horizontal
+
+<DocSubsection>
+  The default orientation is horizontal.
+  <CompPreview
+    code={`<View className="gap-4">
+  <Text>Section Top</Text>
+  <Separator />
+  <Text>Section Bottom</Text>
+</View>`}
+  >
+    <SeparatorInlinePreview />
+  </CompPreview>
+</DocSubsection>
+</DocSection>
+
+## API Reference
+
+<DocSection>
+  <ApiTable
+    rows={[
+      {
+        prop: "orientation",
+        type: `"horizontal" | "vertical"`,
+        default: `"horizontal"`,
+        description: "The orientation of the separator.",
+      },
+    ]}
+  />
+</DocSection>

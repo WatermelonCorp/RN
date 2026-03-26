@@ -1,0 +1,47 @@
+---
+title: Textarea
+description: A multi-line input component for longer text entries.
+kind: component
+category: Components
+image: /logo.png
+---
+
+import { CodeBlock } from "@/components/showcase/code-block";
+import {
+  ApiTable,
+  DocSection,
+  DocSubsection,
+} from "@/components/showcase/docs-primitives";
+import { CompPreview } from "@/components/mdx/component-preview";
+import { TextareaInlinePreview } from "@/components/showcase/component-live-preview";
+
+## Import
+
+<DocSection>
+  <CodeBlock language="tsx" title="Import" showLineNumbers={false}>
+    {`import { Textarea } from "@/components/ui/textarea";`}
+  </CodeBlock>
+</DocSection>
+
+## Usage
+
+<DocSection>
+  The `Textarea` is an extended `TextInput` that defaults to a multi-line format with a consistent border and background.
+
+### Basic Usage
+
+<DocSubsection>
+  Provide a placeholder for user guidance.
+  <CompPreview
+    code={`<Textarea placeholder="Describe your issue..." />`}
+  >
+    <TextareaInlinePreview />
+  </CompPreview>
+</DocSubsection>
+</DocSection>
+
+## API Reference
+
+<DocSection>
+  `Textarea` extends the standard `TextInput` props from React Native and adds support for the `variant` prop.
+</DocSection>

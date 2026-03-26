@@ -1,0 +1,59 @@
+---
+title: Card
+description: A flexible container component with support for headers, content, and footers.
+kind: component
+category: Components
+image: /logo.png
+---
+
+import { CodeBlock } from "@/components/showcase/code-block";
+import {
+  ApiTable,
+  DocSection,
+  DocSubsection,
+} from "@/components/showcase/docs-primitives";
+import { CompPreview } from "@/components/mdx/component-preview";
+import { CardInlinePreview } from "@/components/showcase/component-live-preview";
+
+## Import
+
+<DocSection>
+  <CodeBlock language="tsx" title="Import" showLineNumbers={false}>
+    {`import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
+import { Text } from "@/components/ui/text";`}
+  </CodeBlock>
+</DocSection>
+
+## Usage
+
+<DocSection>
+  The `Card` component provides a structured layout with consistent padding and borders for grouping related information.
+
+### Basic Card
+
+<DocSubsection>
+  A standard card with header, content, and footer.
+  <CompPreview
+    code={`<Card>
+  <CardHeader>
+    <Text variant="h3">Card Title</Text>
+    <Text variant="muted">Card Description</Text>
+  </CardHeader>
+  <CardContent>
+    <Text>This is the main content of the card.</Text>
+  </CardContent>
+  <CardFooter>
+    <Text variant="small">Footer Content</Text>
+  </CardFooter>
+</Card>`}
+  >
+    <CardInlinePreview />
+  </CompPreview>
+</DocSubsection>
+</DocSection>
+
+## API Reference
+
+<DocSection>
+  `Card`, `CardHeader`, `CardContent`, and `CardFooter` all extend the standard `View` props.
+</DocSection>

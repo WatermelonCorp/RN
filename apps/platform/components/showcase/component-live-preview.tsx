@@ -6,6 +6,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SpotlightButtonDemo } from "@/components/showcase/spotlight-button-demo";
+import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
+import { Text } from "@/components/ui/text";
 
 function PreviewShell({
   children,
@@ -362,6 +367,56 @@ export function TextCodeInlinePreview() {
   );
 }
 
+export function CardInlinePreview() {
+  return (
+    <PreviewShell>
+      <Card className="mx-auto w-full max-w-sm">
+        <CardHeader>
+          <Text variant="h3">Card Title</Text>
+          <Text variant="muted">Description or subtitle goes here.</Text>
+        </CardHeader>
+        <CardContent>
+          <Text>Main content area for your card data.</Text>
+        </CardContent>
+        <CardFooter>
+          <Text variant="small">Footer Action Area</Text>
+        </CardFooter>
+      </Card>
+    </PreviewShell>
+  );
+}
+
+export function LabelInlinePreview() {
+  return (
+    <PreviewShell>
+      <div className="flex flex-col gap-2">
+        <Label>Email Address</Label>
+        <Input placeholder="Enter your email" />
+      </div>
+    </PreviewShell>
+  );
+}
+
+export function SeparatorInlinePreview() {
+  return (
+    <PreviewShell>
+      <div className="flex flex-col gap-4">
+        <Text>Section Top</Text>
+        <Separator />
+        <Text>Section Bottom</Text>
+      </div>
+    </PreviewShell>
+  );
+}
+
+export function TextareaInlinePreview() {
+  return (
+    <PreviewShell>
+      <Textarea placeholder="Describe your issue..." className="min-h-[120px]" />
+    </PreviewShell>
+  );
+}
+
 export function ComponentLivePreview({ slug }: { slug: string }) {
   switch (slug) {
     case "button":
@@ -374,6 +429,14 @@ export function ComponentLivePreview({ slug }: { slug: string }) {
       return <BadgeLivePreview />;
     case "text":
       return <TextLivePreview />;
+    case "card":
+      return <CardInlinePreview />;
+    case "label":
+      return <LabelInlinePreview />;
+    case "separator":
+      return <SeparatorInlinePreview />;
+    case "textarea":
+      return <TextareaInlinePreview />;
     case "spotlight-button":
       return <SpotlightButtonDemo />;
     default:

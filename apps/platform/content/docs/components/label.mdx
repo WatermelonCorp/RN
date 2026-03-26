@@ -1,0 +1,50 @@
+---
+title: Label
+description: An accessible label component for form inputs and other interactive elements.
+kind: component
+category: Components
+image: /logo.png
+---
+
+import { CodeBlock } from "@/components/showcase/code-block";
+import {
+  ApiTable,
+  DocSection,
+  DocSubsection,
+} from "@/components/showcase/docs-primitives";
+import { CompPreview } from "@/components/mdx/component-preview";
+import { LabelInlinePreview } from "@/components/showcase/component-live-preview";
+
+## Import
+
+<DocSection>
+  <CodeBlock language="tsx" title="Import" showLineNumbers={false}>
+    {`import { Label } from "@/components/ui/label";`}
+  </CodeBlock>
+</DocSection>
+
+## Usage
+
+<DocSection>
+  The `Label` component provides a consistent typography style for labeling form fields.
+
+### Basic Usage
+
+<DocSubsection>
+  Use it alongside an input to provide clear context.
+  <CompPreview
+    code={`<View className="gap-2">
+  <Label>Email Address</Label>
+  <Input placeholder="Enter your email" />
+</View>`}
+  >
+    <LabelInlinePreview />
+  </CompPreview>
+</DocSubsection>
+</DocSection>
+
+## API Reference
+
+<DocSection>
+  `Label` extends the standard `Text` props from React Native.
+</DocSection>
