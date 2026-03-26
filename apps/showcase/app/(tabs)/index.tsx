@@ -1,68 +1,76 @@
-import { View, StyleSheet } from 'react-native';
-import { Button } from '@watermelon/registry/components/ui/button';
-import { Text } from '@watermelon/registry/components/ui/text';
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedView } from '@/components/themed-view';
-import { Image } from 'expo-image';
+import { View, ScrollView, Pressable } from "react-native";
+import { Link } from "expo-router";
+import { Text } from "@/registry/components/ui/text";
+import { IconSymbol } from "@/components/ui/icon-symbol";
+
+const CATEGORIES = [
+  { id: "button", name: "Button", icon: "square.and.pencil" as const },
+  {
+    id: "spotlight-button",
+    name: "Spotlight Button",
+    icon: "sparkles" as const,
+  },
+  { id: "input", name: "Input", icon: "keyboard" as const },
+  { id: "textarea", name: "Textarea", icon: "note.text" as const },
+  { id: "badge", name: "Badge", icon: "app.badge" as const },
+  { id: "avatar", name: "Avatar", icon: "person.circle" as const },
+  { id: "card", name: "Card", icon: "rectangle.stack.fill" as const },
+  { id: "separator", name: "Separator", icon: "rectangle.split.3x1" as const },
+  { id: "label", name: "Label", icon: "tag.fill" as const },
+  { id: "text", name: "Typography", icon: "textformat" as const },
+];
 
 export default function HomeScreen() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <Text variant="h1" className="text-3xl font-bold">Watermelon</Text>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Text variant="h3">Button Component Demo</Text>
-
-        <View style={{ gap: 10 }}>
-          <Button onPress={() => alert('Primary pressed')}>
-            <Text>Primary Button</Text>
-          </Button>
-
-          <Button variant="secondary" onPress={() => alert('Secondary pressed')}>
-            <Text variant="h4">Secondary Button</Text>
-          </Button>
-
-          <Button variant="destructive" onPress={() => alert('Destructive pressed')}>
-            <Text>Destructive Button</Text>
-          </Button>
-
-          <Button variant="outline" onPress={() => alert('Outline pressed')}>
-            <Text>Outline Button</Text>
-          </Button>
-          <Button variant="ghost" onPress={() => alert('Ghost pressed')}>
-            <Text>Ghost Button</Text>
-          </Button>
+    <View className="flex-1 bg-background">
+      <ScrollView
+        className="flex-1"
+        contentContainerStyle={{ padding: 20, paddingTop: 60 }}
+        showsVerticalScrollIndicator={false}
+      >
+        <View className="mb-8">
+          <Text variant="h1" className="text-3xl font-extrabold">
+            Watermelon RN
+          </Text>
+          <Text variant="muted" className="mt-1">
+            shadcn-like components for React Native
+          </Text>
         </View>
-      </ThemedView>
-    </ParallaxScrollView>
+
+        <Text variant="h3" className="mb-4">
+          Components
+        </Text>
+
+        <View className="gap-3">
+          {CATEGORIES.map((category) => (
+            <Link
+              key={category.id}
+              href={`/(components)/${category.id}`}
+              asChild
+            >
+              <Pressable className="flex-row items-center justify-between rounded-xl border border-border bg-card p-4 active:bg-secondary/50">
+                <View className="flex-row items-center gap-3">
+                  <View className="h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                    <IconSymbol
+                      name={category.icon}
+                      size={20}
+                      className="text-primary"
+                    />
+                  </View>
+                  <Text className="text-lg font-medium">{category.name}</Text>
+                </View>
+                <IconSymbol
+                  name="chevron.right"
+                  size={16}
+                  className="text-muted-foreground"
+                />
+              </Pressable>
+            </Link>
+          ))}
+        </View>
+
+        <View className="h-20" />
+      </ScrollView>
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});

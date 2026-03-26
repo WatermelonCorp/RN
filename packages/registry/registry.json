@@ -49,6 +49,158 @@
                     }
                 }
             }
+        },
+        "input": {
+            "name": "input",
+            "type": "components:ui",
+            "files": [
+                {
+                    "path": "components/ui/input.tsx",
+                    "content": "",
+                    "type": "registry:ui"
+                }
+            ],
+            "dependencies": [
+                "class-variance-authority"
+            ],
+            "registryDependencies": [],
+            "tailwind": {
+                "config": {
+                    "theme": {
+                        "extend": {}
+                    }
+                }
+            }
+        },
+        "badge": {
+            "name": "badge",
+            "type": "components:ui",
+            "files": [
+                {
+                    "path": "components/ui/badge.tsx",
+                    "content": "",
+                    "type": "registry:ui"
+                }
+            ],
+            "dependencies": [
+                "class-variance-authority"
+            ],
+            "registryDependencies": [
+                "text"
+            ],
+            "tailwind": {
+                "config": {
+                    "theme": {
+                        "extend": {}
+                    }
+                }
+            }
+        },
+        "avatar": {
+            "name": "avatar",
+            "type": "components:ui",
+            "files": [
+                {
+                    "path": "components/ui/avatar.tsx",
+                    "content": "",
+                    "type": "registry:ui"
+                }
+            ],
+            "dependencies": [
+                "@rn-primitives/avatar"
+            ],
+            "registryDependencies": [],
+            "tailwind": {
+                "config": {
+                    "theme": {
+                        "extend": {}
+                    }
+                }
+            }
+        },
+        "card": {
+            "name": "card",
+            "type": "components:ui",
+            "files": [
+                {
+                    "path": "components/ui/card.tsx",
+                    "content": "",
+                    "type": "registry:ui"
+                }
+            ],
+            "dependencies": [],
+            "registryDependencies": [],
+            "tailwind": {
+                "config": {
+                    "theme": {
+                        "extend": {}
+                    }
+                }
+            }
+        },
+        "label": {
+            "name": "label",
+            "type": "components:ui",
+            "files": [
+                {
+                    "path": "components/ui/label.tsx",
+                    "content": "",
+                    "type": "registry:ui"
+                }
+            ],
+            "dependencies": [
+                "@rn-primitives/label"
+            ],
+            "registryDependencies": [],
+            "tailwind": {
+                "config": {
+                    "theme": {
+                        "extend": {}
+                    }
+                }
+            }
+        },
+        "separator": {
+            "name": "separator",
+            "type": "components:ui",
+            "files": [
+                {
+                    "path": "components/ui/separator.tsx",
+                    "content": "",
+                    "type": "registry:ui"
+                }
+            ],
+            "dependencies": [
+                "@rn-primitives/separator"
+            ],
+            "registryDependencies": [],
+            "tailwind": {
+                "config": {
+                    "theme": {
+                        "extend": {}
+                    }
+                }
+            }
+        },
+        "textarea": {
+            "name": "textarea",
+            "type": "components:ui",
+            "files": [
+                {
+                    "path": "components/ui/textarea.tsx",
+                    "content": "",
+                    "type": "registry:ui"
+                }
+            ],
+            "dependencies": [],
+            "registryDependencies": [],
+            "tailwind": {
+                "config": {
+                    "theme": {
+                        "extend": {}
+                    }
+                }
+            }
         }
     }
 }

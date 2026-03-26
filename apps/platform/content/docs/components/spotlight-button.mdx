@@ -1,0 +1,125 @@
+---
+title: Spotlight Button
+description: An animated CTA button with shimmer, glow, and motion-driven emphasis for marketing sections and feature launches.
+kind: component
+category: Animated Components
+image: /logo.png
+dependencies:
+  - motion
+  - class-variance-authority
+  - lucide-react
+install:
+  - npm install motion class-variance-authority lucide-react
+qrValue: showcase://components/spotlight-button
+appStoreHref: https://apps.apple.com/app/expo-go/id982107779
+playStoreHref: https://play.google.com/store/apps/details?id=host.exp.exponent
+importPath: "@/components/animated/spotlight-button"
+sourceHref: https://github.com/vanshpatelx/RN/blob/main/apps/showcase/components/animated/spotlight-button.tsx
+registryHref: https://github.com/vanshpatelx/RN/tree/main/apps/showcase/components/animated
+---
+
+import { CodeBlock } from "@/components/showcase/code-block";
+import {
+  ApiTable,
+  DocSection,
+  DocSubsection,
+} from "@/components/showcase/docs-primitives";
+import { CompPreview } from "@/components/mdx/component-preview";
+import { SpotlightButton } from "@/components/animate-ui/components/buttons/spotlight";
+import {
+  SpotlightButtonDemo,
+  SpotlightButtonInlineDemo,
+} from "@/components/showcase/spotlight-button-demo";
+
+## Import
+
+<DocSection>
+  <CodeBlock language="tsx" title="Import" showLineNumbers={false}>
+    {`import { SpotlightButton } from "@/components/animated/spotlight-button";`}
+  </CodeBlock>
+</DocSection>
+
+## Usage
+
+<DocSection>
+  Use `SpotlightButton` when you want a single call-to-action to feel more cinematic than a standard button.
+
+### Hero CTA
+
+  <DocSubsection>
+    Pair the component with a short badge and a concise action label.
+
+    <CompPreview
+      code={`<SpotlightButton size="lg" badge="Beta">\n  Launch animation\n</SpotlightButton>`}
+    >
+      <SpotlightButtonDemo />
+    </CompPreview>
+
+  </DocSubsection>
+
+### Neutral Surface
+
+  <DocSubsection>
+    Switch to the `neutral` variant when the button sits inside a denser card or dashboard surface.
+
+    <CompPreview
+      code={`<SpotlightButton variant="neutral" badge="Update">\n  View release notes\n</SpotlightButton>`}
+    >
+      <div className="flex min-h-[220px] items-center justify-center rounded-b-xl bg-[linear-gradient(180deg,hsl(var(--background)),color-mix(in_oklab,hsl(var(--muted))_55%,transparent))] p-6">
+        <SpotlightButton variant="neutral" badge="Update">
+          View release notes
+        </SpotlightButton>
+      </div>
+    </CompPreview>
+
+  </DocSubsection>
+
+### Custom Copy
+
+  <DocSubsection>
+    Use the `badge` prop to tune urgency without rewriting the rest of the component structure.
+
+    <CompPreview
+      code={`<SpotlightButton badge="Launch">\n  Open preview build\n</SpotlightButton>`}
+    >
+      <SpotlightButtonInlineDemo />
+    </CompPreview>
+
+  </DocSubsection>
+</DocSection>
+
+## API Reference
+
+<DocSection>
+  `SpotlightButton` extends the native button element and adds lightweight
+  animation props through Motion.
+  <ApiTable
+    rows={[
+      {
+        prop: "variant",
+        type: `"default" | "neutral"`,
+        default: `"default"`,
+        description:
+          "Chooses between a bright promotional surface and a quieter card-style treatment.",
+      },
+      {
+        prop: "size",
+        type: `"default" | "lg"`,
+        default: `"default"`,
+        description: "Controls padding, min-height, and icon spacing.",
+      },
+      {
+        prop: "badge",
+        type: "string",
+        default: `"New"`,
+        description: "Small uppercased pill shown ahead of the label.",
+      },
+      {
+        prop: "disabled",
+        type: "boolean",
+        default: "false",
+        description: "Disables interaction while preserving the layout.",
+      },
+    ]}
+  />
+</DocSection>

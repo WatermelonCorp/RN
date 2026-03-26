@@ -18,44 +18,64 @@ export type ComponentGroup = {
   items: ComponentLink[];
 };
 
+const ANIMATED_COMPONENT_CATEGORY = "Animated Components";
+const COMPONENTS_CATEGORY = "Components";
+
+type DocsNavigationPageData = {
+  kind?: "guide" | "component";
+  badge?: string;
+  title: string;
+  description?: string;
+  category?: string;
+};
+
 export function getGuideLinks(): GuideLink[] {
   return docsSource
     .getPages()
-    .filter((page) => page.data.kind === "guide")
-    .map((page) => ({
-      title: page.data.badge ?? page.data.title,
-      url: page.url,
-    }));
+    .filter((page) => {
+      const pageData = page.data as DocsNavigationPageData;
+      return pageData.kind === "guide";
+    })
+    .map((page) => {
+      const pageData = page.data as DocsNavigationPageData;
+
+      return {
+        title: pageData.badge ?? pageData.title,
+        url: page.url,
+      };
+    });
 }
 
 export function getComponentLinks(): ComponentLink[] {
   return docsSource
     .getPages()
-    .filter((page) => page.data.kind === "component")
-    .map((page) => ({
+    .filter((page) => {
+      const pageData = page.data as DocsNavigationPageData;
+      return pageData.kind === "component";
+    })
+    .map((page) => {
+      const pageData = page.data as DocsNavigationPageData;
+
+      return {
       slug: page.slugs.at(-1) ?? page.url.split("/").at(-1) ?? "",
-      title: page.data.title,
-      description: page.data.description ?? "",
-      category: page.data.category ?? "Components",
+      title: pageData.title,
+      description: pageData.description ?? "",
+      category: pageData.category ?? COMPONENTS_CATEGORY,
       url: page.url,
-    }));
+      };
+    });
 }
 
-export function getComponentGroups(): ComponentGroup[] {
-  const grouped = getComponentLinks().reduce<Map<string, ComponentLink[]>>(
-    (acc, page) => {
-      const bucket = acc.get(page.category) ?? [];
-      bucket.push(page);
-      acc.set(page.category, bucket);
-      return acc;
-    },
-    new Map(),
+export function getComponentEntries(): ComponentLink[] {
+  return getComponentLinks().filter(
+    (page) => page.category !== ANIMATED_COMPONENT_CATEGORY,
   );
+}
 
-  return Array.from(grouped.entries()).map(([title, items]) => ({
-    title,
-    items,
-  }));
+export function getAnimatedComponentEntries(): ComponentLink[] {
+  return getComponentLinks().filter(
+    (page) => page.category === ANIMATED_COMPONENT_CATEGORY,
+  );
 }
 
 export function getComponentPager(slug: string) {
@@ -102,18 +122,28 @@ export function getCommandLinks(): {
     keywords: ["docs", "guide", item.title.toLowerCase()],
   }));
 
-  const componentLinks = getComponentGroups().flatMap((group) =>
-    group.items.map((item) => ({
+  const componentLinks = [
+    ...getComponentEntries().map((item) => ({
       label: item.title,
       href: item.url,
       keywords: [
         item.slug,
-        group.title.toLowerCase(),
+        COMPONENTS_CATEGORY.toLowerCase(),
         ...item.description.toLowerCase().split(/\s+/).slice(0, 6),
       ],
-      group: group.title,
+      group: COMPONENTS_CATEGORY,
     })),
-  );
+    ...getAnimatedComponentEntries().map((item) => ({
+      label: item.title,
+      href: item.url,
+      keywords: [
+        item.slug,
+        ANIMATED_COMPONENT_CATEGORY.toLowerCase(),
+        ...item.description.toLowerCase().split(/\s+/).slice(0, 6),
+      ],
+      group: ANIMATED_COMPONENT_CATEGORY,
+    })),
+  ];
 
   return {
     guides: guideLinks,

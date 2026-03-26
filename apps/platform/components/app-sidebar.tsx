@@ -45,10 +45,12 @@ type NavGroup = {
 export function AppSidebar({
   guideGroups = [],
   componentGroups = [],
+  animatedComponentGroups = [],
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
   guideGroups?: NavGroup[];
   componentGroups?: NavGroup[];
+  animatedComponentGroups?: NavGroup[];
 }) {
   return (
     <Sidebar variant="inset" {...props}>
@@ -66,7 +68,13 @@ export function AppSidebar({
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={guideGroups} label="Platform" />
-        <NavMain items={componentGroups} label="Components" expandAll />
+        <NavMain items={componentGroups} label="Components" labelUrl="/components" expandAll />
+        <NavMain
+          items={animatedComponentGroups}
+          label="Animated Components"
+          labelUrl="/animated-components"
+          expandAll
+        />
         <NavSecondary items={navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

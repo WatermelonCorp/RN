@@ -107,7 +107,7 @@ export function ComponentPreview({
           {/* Code Panel */}
           {activeTab === "code" && code && (
             <div className="max-h-[400px] w-full min-w-0 overflow-auto">
-              <CodeBlock showLineNumbers={true} className="rounded-none">
+              <CodeBlock bare showLineNumbers={true} className="rounded-none">
                 {code}
               </CodeBlock>
             </div>

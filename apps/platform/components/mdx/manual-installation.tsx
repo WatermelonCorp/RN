@@ -24,7 +24,7 @@ export function ManualInstallationCmd({
 }: {
   activePackageManager: PackageManager;
   setActivePackageManager: (pm: PackageManager) => void;
-  dependencies?: string[];
+  dependencies?: readonly string[];
   trackingContext?: InstallTrackingContext;
 }) {
   if (!dependencies || dependencies.length === 0) return null;

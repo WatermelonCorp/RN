@@ -20,6 +20,7 @@ export interface InstallationItem {
   slug: string;
   name: string;
   category: string;
+  importPath?: string;
 }
 
 export const InstallationCmd = ({

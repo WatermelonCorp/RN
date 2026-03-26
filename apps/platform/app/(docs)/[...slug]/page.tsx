@@ -1,3 +1,4 @@
+import type { ComponentType } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -6,7 +7,12 @@ import { DocsBody, DocsDescription, DocsTitle } from "fumadocs-ui/page";
 import MotionDiv from "@/components/core/motion-div";
 import { PageHeader } from "@/components/core/typography";
 import { Button } from "@/components/ui/button";
-import { DocsPager, OnThisPage, PreviewCard } from "@/components/showcase/docs-primitives";
+import {
+  DocsPager,
+  OnThisPage,
+  PreviewCard,
+} from "@/components/showcase/docs-primitives";
+import { ComponentLivePreview } from "@/components/showcase/component-live-preview";
 import { ComponentPreview } from "@/components/mdx/component-preview";
 import { ComponentInstallation } from "@/components/showcase/component-installation";
 import {
@@ -14,16 +20,31 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  getComponentLinks,
-  getComponentPager,
-} from "@/lib/docs-navigation";
+import { getComponentLinks, getComponentPager } from "@/lib/docs-navigation";
 import { docsSource } from "@/lib/docs-source";
 import { getRegistryCatalog } from "@/lib/registry-catalog";
 import { customMDXComponents } from "@/mdx-components";
 
 type DocsPageParams = {
   slug: string[];
+};
+
+type ResolvedDocsPageData = {
+  body: ComponentType<{ components?: typeof customMDXComponents }>;
+  toc?: TOCItemType[];
+  kind?: "guide" | "component";
+  badge?: string;
+  title: string;
+  description?: string;
+  category?: string;
+  sourceHref?: string;
+  registryHref?: string;
+  qrValue?: string;
+  appStoreHref?: string;
+  playStoreHref?: string;
+  install?: string[];
+  importPath?: string;
+  dependencies?: string[];
 };
 
 export function generateStaticParams() {
@@ -58,9 +79,10 @@ export default async function DocsPage({
     notFound();
   }
 
-  const Content = page.data.body;
-  const baseToc = (page.data.toc ?? []) as TOCItemType[];
-  const isComponentPage = page.data.kind === "component";
+  const pageData = page.data as ResolvedDocsPageData;
+  const Content = pageData.body;
+  const baseToc = pageData.toc ?? [];
+  const isComponentPage = pageData.kind === "component";
 
   const toc = isComponentPage
     ? [
@@ -85,12 +107,12 @@ export default async function DocsPage({
         <OnThisPage items={toc} />
 
         <PageHeader
-          badge={page.data.badge ?? page.data.title}
-          title={page.data.title}
-          subTitle={page.data.description ?? ""}
+          badge={pageData.badge ?? pageData.title}
+          title={pageData.title}
+          subTitle={pageData.description ?? ""}
         />
 
-        <DocsBody className="min-w-0 space-y-8">
+        <DocsBody className="min-w-0 space-y-2">
           <Content components={customMDXComponents} />
         </DocsBody>
       </MotionDiv>
@@ -103,7 +125,9 @@ export default async function DocsPage({
   const component = catalog
     .flatMap((category) => category.items)
     .find((item) => item.slug === componentSlug);
-  const componentDoc = componentDocs.find((item) => item.slug === componentSlug);
+  const componentDoc = componentDocs.find(
+    (item) => item.slug === componentSlug,
+  );
 
   if (!component || !componentSlug || !componentDoc) {
     notFound();
@@ -122,26 +146,26 @@ export default async function DocsPage({
       <OnThisPage items={toc} />
       <div className="min-w-0 space-y-6">
         <section className="min-w-0 space-y-2">
-          <p className="text-muted-foreground w-fit rounded-md border bg-black/10 px-2 py-1 text-xs font-medium uppercase backdrop-blur-lg dark:bg-white/5">
-            {page.data.category}
+          <p className="text-muted-foreground w-fit rounded-md border bg-black/10 px-2 py-px text-xs uppercase backdrop-blur-lg dark:bg-white/5">
+            {pageData.category}
           </p>
-          <DocsTitle className="text-3xl leading-tight font-[family:var(--font-display)] sm:text-4xl">
-            {page.data.title}
+          <DocsTitle className="text-xl leading-tight font-medium md:text-2xl">
+            {pageData.title}
           </DocsTitle>
           <DocsDescription className="max-w-3xl text-base leading-7 sm:leading-8">
-            {page.data.description}
+            {pageData.description}
           </DocsDescription>
           <div className="flex flex-wrap gap-3">
-            {page.data.sourceHref ? (
+            {pageData.sourceHref ? (
               <Button asChild variant="outline" size="sm">
-                <Link href={page.data.sourceHref} target="_blank">
+                <Link href={pageData.sourceHref} target="_blank">
                   Source
                 </Link>
               </Button>
             ) : null}
-            {page.data.registryHref ? (
+            {pageData.registryHref ? (
               <Button asChild variant="outline" size="sm">
-                <Link href={page.data.registryHref} target="_blank">
+                <Link href={pageData.registryHref} target="_blank">
                   Registry
                 </Link>
               </Button>
@@ -150,9 +174,9 @@ export default async function DocsPage({
         </section>
 
         <section className="mb-6 min-w-0 space-y-4">
-          {page.data.qrValue &&
-          page.data.appStoreHref &&
-          page.data.playStoreHref ? (
+          {pageData.qrValue &&
+          pageData.appStoreHref &&
+          pageData.playStoreHref ? (
             <div className="flex justify-start sm:justify-end">
               <Popover>
                 <PopoverTrigger asChild>
@@ -162,9 +186,9 @@ export default async function DocsPage({
                 </PopoverTrigger>
                 <PopoverContent>
                   <PreviewCard
-                    qrValue={page.data.qrValue}
-                    appStoreHref={page.data.appStoreHref}
-                    playStoreHref={page.data.playStoreHref}
+                    qrValue={pageData.qrValue}
+                    appStoreHref={pageData.appStoreHref}
+                    playStoreHref={pageData.playStoreHref}
                   />
                 </PopoverContent>
               </Popover>
@@ -172,9 +196,11 @@ export default async function DocsPage({
           ) : null}
           <ComponentPreview
             code={component.source}
-            video={page.data.video}
-            poster={page.data.image}
-          />
+            video={undefined}
+            poster={undefined}
+          >
+            <ComponentLivePreview slug={componentSlug} />
+          </ComponentPreview>
         </section>
 
         <ComponentInstallation
@@ -182,12 +208,13 @@ export default async function DocsPage({
             slug: component.slug,
             name: componentDoc.title,
             category: componentDoc.category,
-            install: page.data.install ?? [`watermelon add ${component.slug}`],
+            install: pageData.install ?? [`watermelon add ${component.slug}`],
+            importPath: pageData.importPath,
           }}
-          dependencies={page.data.dependencies ?? component.dependencies}
+          dependencies={pageData.dependencies ?? component.dependencies}
         />
 
-        <DocsBody className="mb-10 min-w-0 space-y-8 px-0 py-2 sm:space-y-10 sm:px-4">
+        <DocsBody className="mb-10 min-w-0 space-y-2 px-0 py-2 sm:space-y-3 sm:px-4">
           <Content components={customMDXComponents} />
         </DocsBody>
 

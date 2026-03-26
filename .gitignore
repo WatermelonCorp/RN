@@ -62,3 +62,15 @@ xcuserdata
 
 # VSCode
 .history/
+
+# Next.js
+.next
+out
+*.tsbuildinfo
+
+# OpenNext / Cloudflare
+.open-next
+.wrangler
+
+# Environment
+.env*.local

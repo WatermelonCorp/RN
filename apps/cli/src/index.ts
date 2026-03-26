@@ -6,7 +6,7 @@ import ora from 'ora';
 import { DEFAULT_CONFIG, getConfig, setConfig, type WatermelonConfig } from './utils/config.js';
 import { collectComponents, downloadRegistryFile } from './utils/registry.js';
 import { getMissingDependencies, installDependencies } from './utils/dependencies.js';
-import { ensureComponentsDirectory, ensureUtilsFile, installFiles } from './utils/files.js';
+import { ensureComponentsDirectory, ensureCssFile, ensureUtilsFile, installFiles } from './utils/files.js';
 
 const program = new Command();
 
@@ -85,6 +85,7 @@ program
             await setConfig(cwd, config);
             await ensureComponentsDirectory(cwd, config);
             await ensureUtilsFile(cwd, config);
+            await ensureCssFile(cwd, config);
 
             const requiredDeps = [
                 'clsx',

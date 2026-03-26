@@ -1,109 +1,178 @@
-import { TextClassContext } from '@/registry/components/ui/text';
-import { cn } from '@/registry/lib/utils';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { Platform, Pressable } from 'react-native';
+import { TextStyleContext } from '@/registry/components/ui/text';
 import * as React from 'react';
+import {
+    Pressable,
+    StyleSheet,
+    View,
+    type PressableProps,
+    type StyleProp,
+    type TextStyle,
+    type ViewStyle,
+} from 'react-native';
 
-const buttonVariants = cva(
-    cn(
-        'group shrink-0 flex-row items-center justify-center gap-2 rounded-md shadow-none',
-        Platform.select({
-            web: "focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive whitespace-nowrap outline-none transition-all focus-visible:ring-[3px] disabled:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
-        })
-    ),
+type ButtonVariant = 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+type ButtonSize = 'default' | 'sm' | 'lg' | 'icon';
+
+type ButtonProps = Omit<PressableProps, 'children'> &
     {
-        variants: {
-            variant: {
-                default: cn(
-                    'bg-primary active:bg-primary/90 shadow-sm shadow-black/5',
-                    Platform.select({ web: 'hover:bg-primary/90' })
-                ),
-                destructive: cn(
-                    'bg-destructive active:bg-destructive/90 dark:bg-destructive/60 shadow-sm shadow-black/5',
-                    Platform.select({
-                        web: 'hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40',
-                    })
-                ),
-                outline: cn(
-                    'border-border bg-background active:bg-accent dark:bg-input/30 dark:border-input dark:active:bg-input/50 border shadow-sm shadow-black/5',
-                    Platform.select({
-                        web: 'hover:bg-accent dark:hover:bg-input/50',
-                    })
-                ),
-                secondary: cn(
-                    'bg-secondary active:bg-secondary/80 shadow-sm shadow-black/5',
-                    Platform.select({ web: 'hover:bg-secondary/80' })
-                ),
-                ghost: cn(
-                    'active:bg-accent dark:active:bg-accent/50',
-                    Platform.select({ web: 'hover:bg-accent dark:hover:bg-accent/50' })
-                ),
-                link: '',
-            },
-            size: {
-                default: cn('h-10 px-4 py-2 sm:h-9', Platform.select({ web: 'has-[>svg]:px-3' })),
-                sm: cn('h-9 gap-1.5 rounded-md px-3 sm:h-8', Platform.select({ web: 'has-[>svg]:px-2.5' })),
-                lg: cn('h-11 rounded-md px-6 sm:h-10', Platform.select({ web: 'has-[>svg]:px-4' })),
-                icon: 'h-10 w-10 sm:h-9 sm:w-9',
-            },
-        },
-        defaultVariants: {
-            variant: 'default',
-            size: 'default',
-        },
+        children?: React.ReactNode;
+        className?: string;
+        variant?: ButtonVariant;
+        size?: ButtonSize;
+    };
+
+function getButtonStyle(variant: ButtonVariant): StyleProp<ViewStyle> {
+    switch (variant) {
+        case 'destructive':
+            return styles.destructiveButton;
+        case 'outline':
+            return styles.outlineButton;
+        case 'secondary':
+            return styles.secondaryButton;
+        case 'ghost':
+            return styles.ghostButton;
+        case 'link':
+            return styles.linkButton;
+        default:
+            return styles.defaultButton;
     }
-);
+}
 
-const buttonTextVariants = cva(
-    cn(
-        'text-foreground text-sm font-medium',
-        Platform.select({ web: 'pointer-events-none transition-colors' })
-    ),
-    {
-        variants: {
-            variant: {
-                default: 'text-primary-foreground',
-                destructive: 'text-white',
-                outline: cn(
-                    'group-active:text-accent-foreground',
-                    Platform.select({ web: 'group-hover:text-accent-foreground' })
-                ),
-                secondary: 'text-secondary-foreground',
-                ghost: 'group-active:text-accent-foreground',
-                link: cn(
-                    'text-primary group-active:underline',
-                    Platform.select({ web: 'underline-offset-4 hover:underline group-hover:underline' })
-                ),
-            },
-            size: {
-                default: '',
-                sm: '',
-                lg: '',
-                icon: '',
-            },
-        },
-        defaultVariants: {
-            variant: 'default',
-            size: 'default',
-        },
+function getButtonTextStyle(variant: ButtonVariant): StyleProp<TextStyle> {
+    switch (variant) {
+        case 'destructive':
+            return styles.destructiveText;
+        case 'outline':
+            return styles.outlineText;
+        case 'secondary':
+            return styles.secondaryText;
+        case 'ghost':
+            return styles.ghostText;
+        case 'link':
+            return styles.linkText;
+        default:
+            return styles.defaultText;
     }
-);
+}
 
-type ButtonProps = React.ComponentProps<typeof Pressable> &
-    React.RefAttributes<typeof Pressable> &
-    VariantProps<typeof buttonVariants>;
+function getSizeStyle(size: ButtonSize): StyleProp<ViewStyle> {
+    switch (size) {
+        case 'sm':
+            return styles.smButton;
+        case 'lg':
+            return styles.lgButton;
+        case 'icon':
+            return styles.iconButton;
+        default:
+            return styles.mdButton;
+    }
+}
 
-function Button({ className, variant, size, ...props }: ButtonProps) {
+function Button({ style, variant = 'default', size = 'default', disabled, children, ...props }: ButtonProps) {
+    const resolvedStyle = style as StyleProp<ViewStyle>;
+
     return (
-        <TextClassContext.Provider value={buttonTextVariants({ variant, size })}>
-            <Pressable
-                className={cn(props.disabled && 'opacity-50', buttonVariants({ variant, size }), className)}
-                role="button"
-                {...props}
-            />
-        </TextClassContext.Provider>
+        <Pressable disabled={disabled} role="button" style={resolvedStyle} {...props}>
+            {({ pressed }) => (
+                <TextStyleContext.Provider value={[styles.buttonTextBase, getButtonTextStyle(variant)]}>
+                    <View
+                        style={[
+                            styles.baseButton,
+                            getButtonStyle(variant),
+                            getSizeStyle(size),
+                            pressed && variant !== 'link' ? styles.pressed : undefined,
+                            disabled ? styles.disabled : undefined,
+                        ]}
+                    >
+                        {children}
+                    </View>
+                </TextStyleContext.Provider>
+            )}
+        </Pressable>
     );
 }
 
-export { Button, buttonTextVariants, buttonVariants };
+const styles = StyleSheet.create({
+    baseButton: {
+        alignItems: 'center',
+        borderRadius: 8,
+        flexDirection: 'row',
+        gap: 8,
+        justifyContent: 'center',
+    },
+    defaultButton: {
+        backgroundColor: '#18181b',
+    },
+    destructiveButton: {
+        backgroundColor: '#ef4444',
+    },
+    outlineButton: {
+        backgroundColor: '#ffffff',
+        borderColor: '#e4e4e7',
+        borderWidth: 1,
+    },
+    secondaryButton: {
+        backgroundColor: '#f4f4f5',
+    },
+    ghostButton: {
+        backgroundColor: 'transparent',
+    },
+    linkButton: {
+        backgroundColor: 'transparent',
+        paddingHorizontal: 0,
+        paddingVertical: 0,
+    },
+    mdButton: {
+        minHeight: 40,
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+    },
+    smButton: {
+        minHeight: 36,
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+    },
+    lgButton: {
+        minHeight: 44,
+        paddingHorizontal: 24,
+        paddingVertical: 12,
+    },
+    iconButton: {
+        height: 40,
+        justifyContent: 'center',
+        paddingHorizontal: 0,
+        width: 40,
+    },
+    pressed: {
+        opacity: 0.9,
+    },
+    disabled: {
+        opacity: 0.5,
+    },
+    buttonTextBase: {
+        fontSize: 14,
+        fontWeight: '600',
+    },
+    defaultText: {
+        color: '#fafafa',
+    },
+    destructiveText: {
+        color: '#fafafa',
+    },
+    outlineText: {
+        color: '#18181b',
+    },
+    secondaryText: {
+        color: '#18181b',
+    },
+    ghostText: {
+        color: '#18181b',
+    },
+    linkText: {
+        color: '#18181b',
+        textDecorationLine: 'underline',
+    },
+});
+
+export { Button };
 export type { ButtonProps };

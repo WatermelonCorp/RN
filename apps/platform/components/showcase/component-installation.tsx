@@ -13,7 +13,18 @@ type PackageManager = "npm" | "pnpm" | "yarn" | "bun";
 
 interface ComponentInstallationProps {
   item: InstallationItem;
-  dependencies?: string[];
+  dependencies?: readonly string[];
+}
+
+function toImportName(value: string) {
+  return value
+    .replace(/[^a-zA-Z0-9]+/g, " ")
+    .trim()
+    .split(/\s+/)
+    .map((segment) => {
+      return segment.charAt(0).toUpperCase() + segment.slice(1);
+    })
+    .join("");
 }
 
 export function ComponentInstallation({
@@ -22,14 +33,15 @@ export function ComponentInstallation({
 }: ComponentInstallationProps) {
   const [activePackageManager, setActivePackageManager] =
     useState<PackageManager>("npm");
-  const importSnippet = `import { ${item.name} } from "@/components/ui/${item.slug}";`;
+  const importName = toImportName(item.name);
+  const importSnippet = `import { ${importName} } from "${item.importPath ?? `@/components/ui/${item.slug}`}";`;
   const steps = [
     {
       title: "Install the component",
       description: (
         <p>
-          Run the registry command below to add <code>{item.slug}</code> to
-          your project.
+          Run the registry command below to add <code>{item.slug}</code> to your
+          project.
         </p>
       ),
       content: (
@@ -78,7 +90,12 @@ export function ComponentInstallation({
   return (
     <section className="space-y-6">
       <div className="space-y-2">
-        <h2 id="installation" className="scroll-m-20 text-xl font-medium tracking-tight">Installation</h2>
+        <h2
+          id="installation"
+          className="scroll-m-20 text-xl font-medium tracking-tight"
+        >
+          Installation
+        </h2>
         <p className="text-muted-foreground text-sm leading-7">
           Install the registry item directly, then add any package dependencies
           if you are setting the component up manually.
