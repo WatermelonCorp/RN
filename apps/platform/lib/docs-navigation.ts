@@ -21,27 +21,49 @@ export type ComponentGroup = {
 const ANIMATED_COMPONENT_CATEGORY = "Animated Components";
 const COMPONENTS_CATEGORY = "Components";
 
+type DocsNavigationPageData = {
+  kind?: "guide" | "component";
+  badge?: string;
+  title: string;
+  description?: string;
+  category?: string;
+};
+
 export function getGuideLinks(): GuideLink[] {
   return docsSource
     .getPages()
-    .filter((page) => page.data.kind === "guide")
-    .map((page) => ({
-      title: page.data.badge ?? page.data.title,
-      url: page.url,
-    }));
+    .filter((page) => {
+      const pageData = page.data as DocsNavigationPageData;
+      return pageData.kind === "guide";
+    })
+    .map((page) => {
+      const pageData = page.data as DocsNavigationPageData;
+
+      return {
+        title: pageData.badge ?? pageData.title,
+        url: page.url,
+      };
+    });
 }
 
 export function getComponentLinks(): ComponentLink[] {
   return docsSource
     .getPages()
-    .filter((page) => page.data.kind === "component")
-    .map((page) => ({
+    .filter((page) => {
+      const pageData = page.data as DocsNavigationPageData;
+      return pageData.kind === "component";
+    })
+    .map((page) => {
+      const pageData = page.data as DocsNavigationPageData;
+
+      return {
       slug: page.slugs.at(-1) ?? page.url.split("/").at(-1) ?? "",
-      title: page.data.title,
-      description: page.data.description ?? "",
-      category: page.data.category ?? COMPONENTS_CATEGORY,
+      title: pageData.title,
+      description: pageData.description ?? "",
+      category: pageData.category ?? COMPONENTS_CATEGORY,
       url: page.url,
-    }));
+      };
+    });
 }
 
 export function getComponentEntries(): ComponentLink[] {
