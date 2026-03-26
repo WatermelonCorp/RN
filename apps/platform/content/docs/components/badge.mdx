@@ -1,0 +1,104 @@
+---
+title: Badge
+description: A compact label chip with variant styles for status, category, and feedback indicators.
+kind: component
+category: Components
+image: /logo.png
+featured: true
+featuredOrder: 3
+componentNumber: 4
+qrValue: showcase://components/badge
+appStoreHref: https://apps.apple.com/app/expo-go/id982107779
+playStoreHref: https://play.google.com/store/apps/details?id=host.exp.exponent
+dependencies:
+  - class-variance-authority
+install:
+  - watermelon add badge
+sourceHref: https://github.com/vanshpatelx/RN/blob/main/packages/registry/src/components/ui/badge.tsx
+registryHref: https://github.com/vanshpatelx/RN/blob/main/packages/registry/registry.json
+---
+
+import { CodeBlock } from "@/components/showcase/code-block";
+import {
+  ApiTable,
+  DocSection,
+  DocSubsection,
+} from "@/components/showcase/docs-primitives";
+import { CompPreview } from "@/components/mdx/component-preview";
+import {
+  BadgeStatusInlinePreview,
+  BadgeVariantsInlinePreview,
+} from "@/components/showcase/component-live-preview";
+
+## Import
+
+<DocSection>
+  <CodeBlock language="tsx" title="Import" showLineNumbers={false}>
+    {`import { Badge } from "@/components/ui/badge";
+import { Text } from "@/components/ui/text";`}
+  </CodeBlock>
+</DocSection>
+
+## Usage
+
+<DocSection>
+  The `Badge` component composes a `View` wrapper and a `Text` child via the `TextClassContext` for seamless variant-matched text styles.
+
+### Variants
+
+<DocSubsection>
+  Choose from `default`, `secondary`, `destructive`, and `outline`.
+  <CompPreview
+    code={`<Badge variant="default"><Text>New</Text></Badge>
+<Badge variant="secondary"><Text>Beta</Text></Badge>
+<Badge variant="destructive"><Text>Error</Text></Badge>
+<Badge variant="outline"><Text>Draft</Text></Badge>`}
+  >
+    <BadgeVariantsInlinePreview />
+  </CompPreview>
+</DocSubsection>
+
+### With Status Text
+
+  <DocSubsection>
+    Use badges inline to indicate statuses on list items or cards.
+    <CompPreview code={`<Badge variant="secondary">
+  <Text>In Progress</Text>
+</Badge>
+<Badge variant="default">
+  <Text>Shipped</Text>
+</Badge>`}>
+      <BadgeStatusInlinePreview />
+    </CompPreview>
+  </DocSubsection>
+</DocSection>
+
+## API Reference
+
+<DocSection>
+  `Badge` extends `View` props and adds a `variant` prop for visual style.
+  <ApiTable
+    rows={[
+      {
+        prop: "variant",
+        type: `"default" | "secondary" | "destructive" | "outline"`,
+        default: `"default"`,
+        description:
+          "Controls the background, border, and text color of the badge.",
+      },
+      {
+        prop: "children",
+        type: "ReactNode",
+        default: "-",
+        description: "Content inside the badge — typically a Text component.",
+      },
+      {
+        prop: "className",
+        type: "string",
+        default: "-",
+        description:
+          "Extends the NativeWind classes applied to the badge container.",
+      },
+    ]}
+  />
+</DocSection>

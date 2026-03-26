@@ -1,50 +1,34 @@
-import { cn } from '@/registry/lib/utils';
 import * as Slot from '@rn-primitives/slot';
-import { cva, type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
-import { Platform, Text as RNText, type Role } from 'react-native';
+import {
+    Platform,
+    StyleSheet,
+    Text as RNText,
+    type Role,
+    type StyleProp,
+    type TextStyle,
+} from 'react-native';
 
-const textVariants = cva(
-    cn(
-        'text-foreground text-base',
-        Platform.select({
-            web: 'select-text',
-        })
-    ),
-    {
-        variants: {
-            variant: {
-                default: '',
-                h1: cn(
-                    'text-center text-4xl font-extrabold tracking-tight',
-                    Platform.select({ web: 'scroll-m-20 text-balance' })
-                ),
-                h2: cn(
-                    'border-border border-b pb-2 text-3xl font-semibold tracking-tight',
-                    Platform.select({ web: 'scroll-m-20 first:mt-0' })
-                ),
-                h3: cn('text-2xl font-semibold tracking-tight', Platform.select({ web: 'scroll-m-20' })),
-                h4: cn('text-xl font-semibold tracking-tight', Platform.select({ web: 'scroll-m-20' })),
-                p: 'mt-3 leading-7 sm:mt-6',
-                blockquote: 'mt-4 border-l-2 pl-3 italic sm:mt-6 sm:pl-6',
-                code: cn(
-                    'bg-muted relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold'
-                ),
-                lead: 'text-muted-foreground text-xl',
-                large: 'text-lg font-semibold',
-                small: 'text-sm font-medium leading-none',
-                muted: 'text-muted-foreground text-sm',
-            },
-        },
-        defaultVariants: {
-            variant: 'default',
-        },
-    }
-);
+type TextVariant =
+    | 'default'
+    | 'h1'
+    | 'h2'
+    | 'h3'
+    | 'h4'
+    | 'p'
+    | 'blockquote'
+    | 'code'
+    | 'lead'
+    | 'large'
+    | 'small'
+    | 'muted';
 
-type TextVariantProps = VariantProps<typeof textVariants>;
-
-type TextVariant = NonNullable<TextVariantProps['variant']>;
+type TextProps = React.ComponentProps<typeof RNText> &
+    React.RefAttributes<RNText> & {
+        asChild?: boolean;
+        className?: string;
+        variant?: TextVariant;
+    };
 
 const ROLE: Partial<Record<TextVariant, Role>> = {
     h1: 'heading',
@@ -62,28 +46,118 @@ const ARIA_LEVEL: Partial<Record<TextVariant, string>> = {
     h4: '4',
 };
 
-const TextClassContext = React.createContext<string | undefined>(undefined);
+const TextStyleContext = React.createContext<StyleProp<TextStyle> | undefined>(undefined);
 
-function Text({
-    className,
-    asChild = false,
-    variant = 'default',
-    ...props
-}: React.ComponentProps<typeof RNText> &
-    TextVariantProps &
-    React.RefAttributes<RNText> & {
-        asChild?: boolean;
-    }) {
-    const textClass = React.useContext(TextClassContext);
+function getVariantStyle(variant: TextVariant): StyleProp<TextStyle> {
+    switch (variant) {
+        case 'h1':
+            return styles.h1;
+        case 'h2':
+            return styles.h2;
+        case 'h3':
+            return styles.h3;
+        case 'h4':
+            return styles.h4;
+        case 'p':
+            return styles.p;
+        case 'blockquote':
+            return styles.blockquote;
+        case 'code':
+            return styles.code;
+        case 'lead':
+            return styles.lead;
+        case 'large':
+            return styles.large;
+        case 'small':
+            return styles.small;
+        case 'muted':
+            return styles.muted;
+        default:
+            return styles.default;
+    }
+}
+
+function Text({ style, asChild = false, variant = 'default', ...props }: TextProps) {
+    const inheritedStyle = React.useContext(TextStyleContext);
     const Component = asChild ? Slot.Text : RNText;
+
     return (
         <Component
-            className={cn(textVariants({ variant }), textClass, className)}
-            role={variant ? ROLE[variant] : undefined}
-            aria-level={variant ? ARIA_LEVEL[variant] : undefined}
+            style={[styles.base, getVariantStyle(variant), inheritedStyle, style]}
+            role={ROLE[variant]}
+            aria-level={ARIA_LEVEL[variant]}
             {...props}
         />
     );
 }
 
-export { Text, TextClassContext };
+const styles = StyleSheet.create({
+    base: {
+        color: '#09090b',
+        fontSize: 16,
+    },
+    default: {},
+    h1: {
+        fontSize: 36,
+        fontWeight: '800',
+        lineHeight: 40,
+    },
+    h2: {
+        fontSize: 30,
+        fontWeight: '700',
+        lineHeight: 34,
+        paddingBottom: 8,
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderBottomColor: '#e4e4e7',
+    },
+    h3: {
+        fontSize: 24,
+        fontWeight: '700',
+        lineHeight: 28,
+    },
+    h4: {
+        fontSize: 20,
+        fontWeight: '600',
+        lineHeight: 24,
+    },
+    p: {
+        lineHeight: 24,
+    },
+    blockquote: {
+        borderLeftWidth: 3,
+        borderLeftColor: '#e4e4e7',
+        fontStyle: 'italic',
+        paddingLeft: 12,
+    },
+    code: {
+        backgroundColor: '#f4f4f5',
+        borderRadius: 6,
+        fontFamily: Platform.select({ ios: 'Menlo', android: 'monospace', default: 'monospace' }),
+        fontSize: 13,
+        fontWeight: '600',
+        overflow: 'hidden',
+        paddingHorizontal: 6,
+        paddingVertical: 4,
+    },
+    lead: {
+        color: '#71717a',
+        fontSize: 20,
+        lineHeight: 28,
+    },
+    large: {
+        fontSize: 18,
+        fontWeight: '600',
+        lineHeight: 24,
+    },
+    small: {
+        fontSize: 14,
+        fontWeight: '500',
+    },
+    muted: {
+        color: '#71717a',
+        fontSize: 14,
+        lineHeight: 20,
+    },
+});
+
+export { Text, TextStyleContext };

@@ -49,10 +49,10 @@ export function Navbar({
         <div className="flex min-w-0 shrink-0 items-center">
           <div
             className={cn(
-              "flex items-center gap-2 transition-all duration-300 ease-in-out overflow-hidden whitespace-nowrap",
+              "flex items-center gap-2 overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out",
               !isOpen || isMobile
-                ? "w-auto translate-x-0 opacity-100 mr-3"
-                : "w-0 -translate-x-full opacity-0 pointer-events-none mr-0",
+                ? "mr-3 w-auto translate-x-0 opacity-100"
+                : "pointer-events-none mr-0 w-0 -translate-x-full opacity-0",
             )}
           >
             <SidebarTrigger />

@@ -1,4 +1,4 @@
 {
   "title": "Components",
-  "pages": ["button", "text"]
+  "pages": ["button", "text", "spotlight-button"]
 }

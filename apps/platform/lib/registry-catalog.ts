@@ -1,5 +1,6 @@
 import { getComponentLinks } from "@/lib/docs-navigation";
 import registryData from "./registry-data.json";
+import { customShowcaseItems } from "./custom-showcase";
 
 export type ShowcaseComponent = {
   slug: string;
@@ -28,7 +29,7 @@ export async function getRegistryCatalog(): Promise<ShowcaseCategory[]> {
     getComponentLinks().map((item) => [item.slug, item] as const),
   );
 
-  const items = registryData.map((component) => {
+  const items = [...registryData, ...customShowcaseItems].map((component) => {
     const slug = component.slug;
     const preset = docsMeta.get(slug);
 
@@ -47,12 +48,15 @@ export async function getRegistryCatalog(): Promise<ShowcaseCategory[]> {
     } satisfies ShowcaseComponent;
   });
 
-  const grouped = items.reduce<Map<string, ShowcaseComponent[]>>((acc, item) => {
-    const bucket = acc.get(item.category) ?? [];
-    bucket.push(item);
-    acc.set(item.category, bucket);
-    return acc;
-  }, new Map());
+  const grouped = items.reduce<Map<string, ShowcaseComponent[]>>(
+    (acc, item) => {
+      const bucket = acc.get(item.category) ?? [];
+      bucket.push(item);
+      acc.set(item.category, bucket);
+      return acc;
+    },
+    new Map(),
+  );
 
   return Array.from(grouped.entries()).map(([title, categoryItems]) => ({
     slug: title.toLowerCase().replace(/\s+/g, "-"),

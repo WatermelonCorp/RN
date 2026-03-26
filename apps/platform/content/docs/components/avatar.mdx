@@ -1,0 +1,118 @@
+---
+title: Avatar
+description: A circular image container with an accessible fallback for representing users and entities.
+kind: component
+category: Components
+image: /logo.png
+featured: true
+featuredOrder: 4
+componentNumber: 5
+qrValue: showcase://components/avatar
+appStoreHref: https://apps.apple.com/app/expo-go/id982107779
+playStoreHref: https://play.google.com/store/apps/details?id=host.exp.exponent
+dependencies:
+  - "@rn-primitives/avatar"
+install:
+  - watermelon add avatar
+sourceHref: https://github.com/vanshpatelx/RN/blob/main/packages/registry/src/components/ui/avatar.tsx
+registryHref: https://github.com/vanshpatelx/RN/blob/main/packages/registry/registry.json
+---
+
+import { CodeBlock } from "@/components/showcase/code-block";
+import {
+  ApiTable,
+  DocSection,
+  DocSubsection,
+} from "@/components/showcase/docs-primitives";
+import { CompPreview } from "@/components/mdx/component-preview";
+import {
+  AvatarFallbackInlinePreview,
+  AvatarImageInlinePreview,
+  AvatarSizeInlinePreview,
+} from "@/components/showcase/component-live-preview";
+
+## Import
+
+<DocSection>
+  <CodeBlock language="tsx" title="Import" showLineNumbers={false}>
+    {`import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Text } from "@/components/ui/text";`}
+  </CodeBlock>
+</DocSection>
+
+## Usage
+
+<DocSection>
+  The `Avatar` primitive uses `@rn-primitives/avatar` for lazy loading with an accessible `AvatarFallback` shown before the image resolves.
+
+### With Image
+
+<DocSubsection>
+  Provide a `src` to load a remote image for the avatar.
+  <CompPreview
+    code={`<Avatar>
+  <AvatarImage src="https://github.com/shadcn.png" />
+  <AvatarFallback>
+    <Text>SC</Text>
+  </AvatarFallback>
+</Avatar>`}
+  >
+    <AvatarImageInlinePreview />
+  </CompPreview>
+</DocSubsection>
+
+### Fallback Only
+
+<DocSubsection>
+  When no image is provided, `AvatarFallback` always renders.
+  <CompPreview
+    code={`<Avatar>
+  <AvatarFallback>
+    <Text>JD</Text>
+  </AvatarFallback>
+</Avatar>`}
+  >
+    <AvatarFallbackInlinePreview />
+  </CompPreview>
+</DocSubsection>
+
+### Custom Sizes
+
+  <DocSubsection>
+    Override the default 40×40 size with NativeWind classes.
+    <CompPreview code={`<Avatar className="h-16 w-16">
+  <AvatarFallback>
+    <Text variant="large">AB</Text>
+  </AvatarFallback>
+</Avatar>`}>
+      <AvatarSizeInlinePreview />
+    </CompPreview>
+  </DocSubsection>
+</DocSection>
+
+## API Reference
+
+<DocSection>
+  <ApiTable
+    rows={[
+      {
+        prop: "src",
+        type: "string",
+        default: "-",
+        description: "Image source URI passed to AvatarImage.",
+      },
+      {
+        prop: "alt",
+        type: "string",
+        default: "-",
+        description: "Accessible label for the avatar image.",
+      },
+      {
+        prop: "className",
+        type: "string",
+        default: "-",
+        description: "Override classes on the Avatar root container.",
+      },
+    ]}
+  />
+</DocSection>

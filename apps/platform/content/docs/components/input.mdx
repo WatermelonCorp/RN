@@ -1,0 +1,126 @@
+---
+title: Input
+description: A styled TextInput primitive with focus ring, variants, and accessible props for form interactions.
+kind: component
+category: Components
+image: /logo.png
+featured: true
+featuredOrder: 2
+componentNumber: 3
+qrValue: showcase://components/input
+appStoreHref: https://apps.apple.com/app/expo-go/id982107779
+playStoreHref: https://play.google.com/store/apps/details?id=host.exp.exponent
+dependencies:
+  - class-variance-authority
+install:
+  - watermelon add input
+sourceHref: https://github.com/vanshpatelx/RN/blob/main/packages/registry/src/components/ui/input.tsx
+registryHref: https://github.com/vanshpatelx/RN/blob/main/packages/registry/registry.json
+---
+
+import { CodeBlock } from "@/components/showcase/code-block";
+import {
+  ApiTable,
+  DocSection,
+  DocSubsection,
+} from "@/components/showcase/docs-primitives";
+import { CompPreview } from "@/components/mdx/component-preview";
+import {
+  InputBasicInlinePreview,
+  InputDisabledInlinePreview,
+  InputGhostInlinePreview,
+  InputSecureInlinePreview,
+} from "@/components/showcase/component-live-preview";
+
+## Import
+
+<DocSection>
+  <CodeBlock language="tsx" title="Import" showLineNumbers={false}>
+    {`import { Input } from "@/components/ui/input";`}
+  </CodeBlock>
+</DocSection>
+
+## Usage
+
+<DocSection>
+  The `Input` component wraps React Native's `TextInput` with NativeWind v4 styles and a variant API for visual modes.
+
+### Basic Usage
+
+<DocSubsection>
+  A standard text input with placeholder and focus ring.
+  <CompPreview code={`<Input placeholder="Enter your name" />`}>
+    <InputBasicInlinePreview />
+  </CompPreview>
+</DocSubsection>
+
+### Ghost Variant
+
+<DocSubsection>
+  Use the `ghost` variant for borderless inputs on coloured backgrounds.
+  <CompPreview code={`<Input variant="ghost" placeholder="Search..." />`}>
+    <InputGhostInlinePreview />
+  </CompPreview>
+</DocSubsection>
+
+### Disabled
+
+<DocSubsection>
+  Pass `editable={false}` to disable the input.
+  <CompPreview
+    code={`<Input placeholder="Read-only value" editable={false} />`}
+  >
+    <InputDisabledInlinePreview />
+  </CompPreview>
+</DocSubsection>
+
+### Secure Entry
+
+  <DocSubsection>
+    Use `secureTextEntry` for password inputs.
+    <CompPreview code={`<Input placeholder="Password" secureTextEntry />`}>
+      <InputSecureInlinePreview />
+    </CompPreview>
+  </DocSubsection>
+</DocSection>
+
+## API Reference
+
+<DocSection>
+  `Input` extends all props from React Native `TextInput` and adds design-system
+  variants.
+  <ApiTable
+    rows={[
+      {
+        prop: "variant",
+        type: `"default" | "ghost"`,
+        default: `"default"`,
+        description: "Controls the visual style of the input.",
+      },
+      {
+        prop: "placeholder",
+        type: "string",
+        default: "-",
+        description: "Placeholder text shown when the input is empty.",
+      },
+      {
+        prop: "editable",
+        type: "boolean",
+        default: "true",
+        description: "When false, disables the input and lowers opacity.",
+      },
+      {
+        prop: "secureTextEntry",
+        type: "boolean",
+        default: "false",
+        description: "Masks the text for password fields.",
+      },
+      {
+        prop: "className",
+        type: "string",
+        default: "-",
+        description: "Extends the NativeWind classes applied to the input.",
+      },
+    ]}
+  />
+</DocSection>

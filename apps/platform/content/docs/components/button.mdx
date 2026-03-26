@@ -2,7 +2,7 @@
 title: Button
 description: A cross-platform pressable with size and variant APIs for primary actions, secondary actions, and icon-only controls.
 kind: component
-category: Buttons
+category: Components
 image: /logo.png
 video: /previews/button-preview.mp4
 featured: true
@@ -29,12 +29,18 @@ import {
   DocSubsection,
 } from "@/components/showcase/docs-primitives";
 import { CompPreview } from "@/components/mdx/component-preview";
+import {
+  ButtonBasicInlinePreview,
+  ButtonSizesInlinePreview,
+  ButtonTextInlinePreview,
+  ButtonVariantsInlinePreview,
+} from "@/components/showcase/component-live-preview";
 
 ## Import
 
 <DocSection>
   <CodeBlock language="tsx" title="Import" showLineNumbers={false}>
-    {`import { Button } from "@/components/ui/button";
+    {`import { Button } from "@/components/ui/button"
 import { Text } from "@/components/ui/text";`}
   </CodeBlock>
 </DocSection>
@@ -42,67 +48,67 @@ import { Text } from "@/components/ui/text";`}
 ## Usage
 
 <DocSection>
-  <p>
-    The <code>Button</code> component wraps a React Native <code>Pressable</code>{" "}
-    and shares text styling through the registry <code>Text</code> primitive.
-  </p>
+  The `Button` component wraps a React Native `Pressable` and shares text styling through the registry `Text` primitive.
 
-  ### Basic Usage
+### Basic Usage
 
-  <DocSubsection>
-    <p>Use the default button for primary actions.</p>
-    <CompPreview video="/previews/button-preview.mp4" code={`<Button>
+<DocSubsection>
+  Use the default button for primary actions.
+  <CompPreview
+    code={`<Button>
   <Text>Continue</Text>
-</Button>`} />
-  </DocSubsection>
+</Button>`}
+  >
+    <ButtonBasicInlinePreview />
+  </CompPreview>
+</DocSubsection>
 
-  ### Variants
+### Variants
 
-  <DocSubsection>
-    <p>
-      Choose from <code>default</code>, <code>secondary</code>,{" "}
-      <code>outline</code>, <code>ghost</code>, <code>destructive</code>, and{" "}
-      <code>link</code>.
-    </p>
-    <CompPreview video="/previews/button-preview.mp4" code={`<Button variant="default"><Text>Primary</Text></Button>
+<DocSubsection>
+  Choose from `default`, `secondary`, `outline`, `ghost`, `destructive`, and
+  `link`.
+  <CompPreview
+    code={`<Button variant="default"><Text>Primary</Text></Button>
 <Button variant="secondary"><Text>Secondary</Text></Button>
 <Button variant="outline"><Text>Outline</Text></Button>
 <Button variant="ghost"><Text>Ghost</Text></Button>
-<Button variant="destructive"><Text>Delete</Text></Button>`} />
-  </DocSubsection>
+<Button variant="destructive"><Text>Delete</Text></Button>`}
+  >
+    <ButtonVariantsInlinePreview />
+  </CompPreview>
+</DocSubsection>
 
-  ### Sizes
+### Sizes
 
-  <DocSubsection>
-    <p>
-      Match the control to the surface with <code>sm</code>,{" "}
-      <code>default</code>, <code>lg</code>, or <code>icon</code>.
-    </p>
-    <CompPreview video="/previews/button-preview.mp4" code={`<Button size="sm"><Text>Small</Text></Button>
+<DocSubsection>
+  Match the control to the surface with `sm`, `default`, `lg`, or `icon`.
+  <CompPreview
+    code={`<Button size="sm"><Text>Small</Text></Button>
 <Button size="default"><Text>Default</Text></Button>
-<Button size="lg"><Text>Large</Text></Button>`} />
-  </DocSubsection>
+<Button size="lg"><Text>Large</Text></Button>`}
+  >
+    <ButtonSizesInlinePreview />
+  </CompPreview>
+</DocSubsection>
 
-  ### With Text
+### With Text
 
   <DocSubsection>
-    <p>
-      Because the registry shares class names with the nested <code>Text</code>{" "}
-      element, icon and label compositions stay visually consistent.
-    </p>
-    <CompPreview video="/previews/button-preview.mp4" code={`<Button variant="outline" size="lg">
+    Because the registry shares class names with the nested `Text` element, icon and label compositions stay visually consistent.
+    <CompPreview code={`<Button variant="outline" size="lg">
   <Text>Open Preview</Text>
-</Button>`} />
+</Button>`}>
+      <ButtonTextInlinePreview />
+    </CompPreview>
   </DocSubsection>
 </DocSection>
 
 ## API Reference
 
 <DocSection>
-  <p>
-    <code>Button</code> extends all supported props from React Native{" "}
-    <code>Pressable</code> and adds design-system variants.
-  </p>
+  `Button` extends all supported props from React Native `Pressable` and adds
+  design-system variants.
   <ApiTable
     rows={[
       {

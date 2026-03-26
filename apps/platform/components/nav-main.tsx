@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   Collapsible,
   CollapsibleContent,
@@ -22,6 +23,7 @@ import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
 export function NavMain({
   items,
   label = "Platform",
+  labelUrl,
   expandAll = false,
 }: {
   items: {
@@ -35,11 +37,14 @@ export function NavMain({
     }[];
   }[];
   label?: string;
+  labelUrl?: string;
   expandAll?: boolean;
 }) {
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>{label}</SidebarGroupLabel>
+      <SidebarGroupLabel asChild={!!labelUrl}>
+        {labelUrl ? <Link href={labelUrl}>{label}</Link> : label}
+      </SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <Collapsible

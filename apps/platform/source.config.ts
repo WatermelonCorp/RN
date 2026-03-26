@@ -1,5 +1,9 @@
 import { z } from "zod";
-import { defineDocs, defineConfig, frontmatterSchema } from "fumadocs-mdx/config";
+import {
+  defineDocs,
+  defineConfig,
+  frontmatterSchema,
+} from "fumadocs-mdx/config";
 
 const pageSchema = frontmatterSchema.extend({
   kind: z.enum(["guide", "component"]).default("guide"),
@@ -17,6 +21,7 @@ const pageSchema = frontmatterSchema.extend({
   playStoreHref: z.string().optional(),
   sourceHref: z.string().optional(),
   registryHref: z.string().optional(),
+  importPath: z.string().optional(),
 });
 
 export const docs = defineDocs({

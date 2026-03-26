@@ -18,24 +18,49 @@ const MAPPING = {
   'paperplane.fill': 'send',
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.right': 'chevron-right',
+  'square.and.pencil': 'edit',
+  'keyboard': 'keyboard',
+  'app.badge': 'badge',
+  'person.circle': 'person',
+  'textformat': 'text-format',
+  'rectangle.stack.fill': 'dashboard',
+  'rectangle.split.3x1': 'view-week',
+  'note.text': 'notes',
+  'tag.fill': 'local-offer',
 } as IconMapping;
+
+import { cssInterop } from 'react-native-css-interop';
 
 /**
  * An icon component that uses native SF Symbols on iOS, and Material Icons on Android and web.
  * This ensures a consistent look across platforms, and optimal resource usage.
  * Icon `name`s are based on SF Symbols and require manual mapping to Material Icons.
  */
-export function IconSymbol({
+function IconSymbol({
   name,
   size = 24,
   color,
   style,
+  className,
 }: {
   name: IconSymbolName;
   size?: number;
-  color: string | OpaqueColorValue;
+  color?: string | OpaqueColorValue;
   style?: StyleProp<TextStyle>;
   weight?: SymbolWeight;
+  className?: string;
 }) {
-  return <MaterialIcons color={color} size={size} name={MAPPING[name]} style={style} />;
+  return <MaterialIcons color={color} size={size} name={MAPPING[name]} style={[style]} className={className} />;
 }
+
+cssInterop(IconSymbol, {
+  className: {
+    target: 'style',
+    nativeStyleToProp: {
+      color: true,
+      fontSize: 'size',
+    },
+  },
+});
+
+export { IconSymbol };
