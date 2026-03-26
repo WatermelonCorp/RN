@@ -7,8 +7,8 @@ export type ShowcaseComponent = {
   title: string;
   description: string;
   category: string;
-  dependencies: string[];
-  registryDependencies: string[];
+  dependencies: readonly string[];
+  registryDependencies: readonly string[];
   installCommand: string;
   sourcePath: string;
   source: string;

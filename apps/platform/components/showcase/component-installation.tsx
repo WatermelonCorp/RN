@@ -13,7 +13,7 @@ type PackageManager = "npm" | "pnpm" | "yarn" | "bun";
 
 interface ComponentInstallationProps {
   item: InstallationItem;
-  dependencies?: string[];
+  dependencies?: readonly string[];
 }
 
 function toImportName(value: string) {
