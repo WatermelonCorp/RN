@@ -7,6 +7,7 @@
     "prebuild": "node scripts/generate-registry.mjs",
     "build": "next build",
     "build:cloudflare": "opennextjs-cloudflare build",
+    "postbuild": "node scripts/ensure-pages-manifest.mjs",
     "preview": "pnpm run build:cloudflare && opennextjs-cloudflare preview",
     "deploy": "pnpm run build:cloudflare && opennextjs-cloudflare deploy",
     "upload": "pnpm run build:cloudflare && opennextjs-cloudflare upload",

@@ -8,7 +8,6 @@ const withMDX = createMDX();
 const workspaceRoot = path.join(__dirname, "../..");
 
 const nextConfig = {
-  output: "standalone" as const,
   pageExtensions: ["ts", "tsx", "md", "mdx"],
   outputFileTracingRoot: workspaceRoot,
   turbopack: {
