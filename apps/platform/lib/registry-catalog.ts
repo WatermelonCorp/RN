@@ -1,6 +1,5 @@
 import { getComponentLinks } from "@/lib/docs-navigation";
 import registryData from "./registry-data.json";
-import { customShowcaseItems } from "./custom-showcase";
 
 export type ShowcaseComponent = {
   slug: string;
@@ -29,7 +28,7 @@ export async function getRegistryCatalog(): Promise<ShowcaseCategory[]> {
     getComponentLinks().map((item) => [item.slug, item] as const),
   );
 
-  const items = [...registryData, ...customShowcaseItems].map((component) => {
+  const items = registryData.map((component) => {
     const slug = component.slug;
     const preset = docsMeta.get(slug);
 
